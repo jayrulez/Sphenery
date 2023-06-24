@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Framework" = "*"}
+
+[Project]
+Name = "Sample01_BasicApplication"
+StartupObject = "Sample01_BasicApplication.Program"
