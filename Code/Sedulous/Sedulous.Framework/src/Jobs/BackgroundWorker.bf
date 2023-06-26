@@ -8,8 +8,8 @@ internal class BackgroundWorker : Worker
 {
 	private readonly Thread mThread = null;
 
-	public this(JobSystem jobSystem, StringView name)
-		: base(jobSystem, name)
+	public this(JobSystem jobSystem, StringView name, WorkerFlags flags = .None)
+		: base(jobSystem, name, flags)
 	{
 		mThread = new Thread(new => this.ProcessJobsAsync);
 		mThread.SetName(mName);
@@ -46,32 +46,38 @@ internal class BackgroundWorker : Worker
 	{
 		while (true)
 		{
-			if (mThread.ThreadState == .AbortRequested)
-			{
-				// todo
-				// the worker needs to be stopped
-				// Set the worker thread state to dead
-			}
-
 			if (!mIsRunning)
 			{
-				mState = .Dead;
-
-				// Return any pending jobs to the job system if the worker dies
-				using (mJobsMonitor.Enter())
-				{
-					while (mJobs.Count > 0)
-					{
-						var job = mJobs.PopFront();
-						defer job.ReleaseRef();
-						mJobSystem.AddJob(job);
-					}
-				}
-
 				return;
 			}
 
 			ProcessJobs();
+		}
+	}
+
+	public override void Update()
+	{
+		if (mThread.ThreadState == .AbortRequested)
+		{
+			// todo
+			// the worker needs to be stopped
+			// Set the worker thread state to dead
+			mIsRunning = false;
+			mState = .Dead;
+		}
+
+		if (!mIsRunning)
+		{
+			// Return any pending jobs to the job system if the worker dies
+			using (mJobsMonitor.Enter())
+			{
+				while (mJobs.Count > 0)
+				{
+					var job = mJobs.PopFront();
+					defer job.ReleaseRef();
+					mJobSystem.AddJob(job);
+				}
+			}
 		}
 	}
 }

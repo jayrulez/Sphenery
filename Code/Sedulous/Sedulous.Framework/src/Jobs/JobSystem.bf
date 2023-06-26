@@ -49,7 +49,7 @@ class JobSystem
 
 		for (int i = 0; i < mMinimumBackgroundWorkers; i++)
 		{
-			BackgroundWorker worker = new .(this, scope $"Worker {i}");
+			BackgroundWorker worker = new .(this, scope $"Worker {i}", .Persistent);
 
 			mWorkers.Add(worker);
 		}
@@ -231,13 +231,41 @@ class JobSystem
 			}
 		}
 
-		/*for (int i = 0; i < mWorkers.Count; i++)
+		List<BackgroundWorker> deadWorkers = scope .();
+		for (int i = 0; i < mWorkers.Count; i++)
 		{
-			if (mWorkers[i].State == .Idle)
+			var worker = mWorkers[i];
+			// Update worker in case thread died
+			worker.Update();
+
+			// gather dead workers
+			if (worker.State == .Dead)
+			{
+				deadWorkers.Add(worker);
+			}
+			/*if (worker.State == .Idle)
 			{
 				mWorkers[i].Pause();
+			}*/
+		}
+
+		// Replace dead workers
+		if (deadWorkers.Count > 0)
+		{
+			for (var deadWorker in deadWorkers)
+			{
+				var name = scope String(deadWorker.Name);
+				var flags = deadWorker.Flags;
+				mWorkers.Remove(deadWorker);
+
+				if (deadWorker.Flags.HasFlag(.Persistent))
+				{
+					mWorkers.Add(new BackgroundWorker(this, name, flags));
+				}
+
+				delete deadWorker;
 			}
-		}*/
+		}
 
 		// Process main thread jobs
 		mMainThreadWorker.Update();
@@ -245,8 +273,6 @@ class JobSystem
 		ClearCompletedJobs();
 
 		ClearCancelledJobs();
-
-		// todo: remove dead workers and replace them to satisfy minimum background worker count
 	}
 
 	public void AddJob(JobBase job)

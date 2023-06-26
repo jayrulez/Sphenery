@@ -11,17 +11,20 @@ internal abstract class Worker
 	protected readonly String mName = new .() ~ delete _;
 	protected bool mIsRunning = false;
 	protected WorkerState mState = .Paused;
+	private readonly WorkerFlags mFlags = .None;
 
 	protected Monitor mJobsMonitor = new .() ~ delete _;
 	protected Queue<JobBase> mJobs = new .() ~ delete _;
 
 	public String Name => mName;
 	public WorkerState State => mState;
+	public WorkerFlags Flags => mFlags;
 
-	public this(JobSystem jobSystem, StringView name)
+	public this(JobSystem jobSystem, StringView name, WorkerFlags flags)
 	{
 		mJobSystem = jobSystem;
 		mName.Set(name);
+		mFlags = flags;
 	}
 
 	public ~this()
