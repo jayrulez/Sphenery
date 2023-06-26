@@ -5,11 +5,13 @@ using System.Diagnostics;
 using Sedulous.Core;
 using Sedulous.Core.Logging.Abstractions;
 using Sedulous.Framework.Jobs;
+using Sedulous.Core.Messaging;
+using Sedulous.Framework.Messaging;
 namespace Sedulous.Framework;
 
 using internal Sedulous.Core;
 
-class Application
+class Application : IMessageSubscriber<MessageId>
 {
 	private readonly Monitor mMonitor = new .() ~ delete _;
 
@@ -70,6 +72,11 @@ class Application
 	private readonly JobSystem mJobSystem = null;
 	public JobSystem JobSystem { get => mJobSystem; }
 
+	// The application event queue.
+	private readonly LocalMessageQueue<MessageId> mMessages = new .() ~ delete _;
+
+	public IMessageQueue<MessageId> Messages => mMessages;
+
 	public this(ILogger logger, ApplicationConfiguration configuration)
 	{
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
@@ -91,6 +98,16 @@ class Application
 			{
 				delete mUpdateFunctions[member];
 			});
+	}
+
+	public int GetHashCode()
+	{
+		return (int)(void*)Internal.UnsafeCastToPtr(this);
+	}
+
+	void IMessageSubscriber<MessageId>.ReceiveMessage(MessageId type, MessageData data)
+	{
+		OnReceivedMessage(type, data);
 	}
 
 	internal void SetState(ApplicationState state)
@@ -129,7 +146,7 @@ class Application
 		OnInitialized();
 		RegisterUpdateFunctions(mDefaultUpdateFunctionInfos);
 
-
+		mMessages.Subscribe(this, ApplicationMessages.Quit);
 		mInitialized = true;
 	}
 
@@ -139,6 +156,8 @@ class Application
 		{
 			return;
 		}
+
+		mMessages.Unsubscribe(this, ApplicationMessages.Quit);
 
 		UnregisterUpdateFunctions(mDefaultUpdateFunctionInfos);
 
@@ -221,6 +240,7 @@ class Application
 		}
 
 		{
+			ProcessMessages();
 			mJobSystem.Update();
 		}
 
@@ -337,6 +357,21 @@ class Application
 		}
 		outPlugin = ?;
 		return false;
+	}
+
+	internal void ProcessMessages()
+	{
+	    mMessages.Process();
+	}
+
+	/// <summary>
+	/// Occurs when the context receives a message from its queue.
+	/// </summary>
+	/// <param name="type">The message type.</param>
+	/// <param name="data">The message data.</param>
+	protected virtual void OnReceivedMessage(MessageId type, MessageData data)
+	{
+		Logger.LogInformation("MessageType: {0}", type.Value);
 	}
 
 #region Lifecycle methods

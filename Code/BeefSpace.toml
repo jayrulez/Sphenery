@@ -3,4 +3,4 @@ Projects = {Sample01_BasicApplication = {Path = "Samples/Sample01_BasicApplicati
 WorkspaceFolders = {Dependencies = ["corlib", "SDL2"], Sedulous = ["Sedulous.Core", "Sedulous.Framework", "Sedulous.SDL"], Samples = ["Sample01_BasicApplication"], Beef = ["BeefBugs02", "BeefBugs01"]}
 
 [Workspace]
-StartupProject = "BeefBugs02"
+StartupProject = "Sample01_BasicApplication"

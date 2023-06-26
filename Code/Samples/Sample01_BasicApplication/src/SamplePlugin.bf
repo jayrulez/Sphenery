@@ -12,7 +12,12 @@ class SamplePlugin : Plugin
 			Function = new => this.OnUpdate
 		} ~ delete _.Function;
 
-	private delegate void(ApplicationStateChangeInfo info) mStateChangedDelegate = new => this.OnStateChanged ~ delete _;
+	private delegate void(ApplicationStateChangeInfo info) mStateChangedDelegate = new => this.OnStateChanged;
+
+	public ~this()
+	{
+		delete mStateChangedDelegate;
+	}
 
 	public override void Initialize(Application application)
 	{

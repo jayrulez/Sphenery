@@ -3,11 +3,13 @@ using SDL2;
 using System;
 using Sedulous.SDL.Platform;
 using Sedulous.Framework.Platform;
+using Sedulous.Core.Messaging;
+using Sedulous.Framework.Messaging;
 namespace Sedulous.SDL;
 
 using internal Sedulous.Framework;
 
-abstract class SDLApplicationHost : IApplicationHost
+abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<MessageId>
 {
 	private static bool sSDLInitialized = false;
 
@@ -44,6 +46,16 @@ abstract class SDLApplicationHost : IApplicationHost
 	{
 	}
 
+	public int GetHashCode()
+	{
+		return (int)(void*)Internal.UnsafeCastToPtr(this);
+	}
+
+	void IMessageSubscriber<MessageId>.ReceiveMessage(MessageId type, MessageData data)
+	{
+		OnReceivedMessage(type, data);
+	}
+
 	protected abstract Application CreateApplication(ApplicationConfiguration configuration);
 
 	protected abstract void DestroyApplication(Application application);
@@ -62,6 +74,9 @@ abstract class SDLApplicationHost : IApplicationHost
 		var application = CreateApplication(configuration);
 		defer DestroyApplication(application);
 
+		application.Messages.Subscribe(this, ApplicationMessages.Quit);
+		defer application.Messages.Unsubscribe(this);
+
 		mWindowSystem.WindowManager.CreateWindow(
 			title: mPrimaryWindowConfiguration.Title,
 			width: mPrimaryWindowConfiguration.Width,
@@ -75,6 +90,7 @@ abstract class SDLApplicationHost : IApplicationHost
 
 		while (!mExitRequested)
 		{
+			application.Messages.Publish(ApplicationMessages.Quit, null);
 			ProcessEvents();
 			application.Update();
 		}
@@ -108,5 +124,9 @@ abstract class SDLApplicationHost : IApplicationHost
 			default: break;
 			}
 		}
+	}
+
+	protected virtual void OnReceivedMessage(MessageId type, MessageData data)
+	{
 	}
 }
