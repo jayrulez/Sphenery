@@ -1,9 +1,6 @@
 FileVersion = 1
-Projects = {Sample01_BasicApplication = {Path = "Samples/Sample01_BasicApplication"}, "Sedulous.Core" = {Path = "Sedulous/Sedulous.Core"}, "Sedulous.Framework" = {Path = "Sedulous/Sedulous.Framework"}}
-WorkspaceFolders = {Dependencies = ["corlib"], Sedulous = ["Sedulous.Core", "Sedulous.Framework"], Samples = ["Sample01_BasicApplication"]}
+Projects = {Sample01_BasicApplication = {Path = "Samples/Sample01_BasicApplication"}, "Sedulous.Core" = {Path = "Sedulous/Sedulous.Core"}, "Sedulous.Framework" = {Path = "Sedulous/Sedulous.Framework"}, "Sedulous.SDL" = {Path = "Sedulous/Sedulous.SDL"}, SDL2 = "*", BeefBugs = {Path = "Beef/BeefBugs"}}
+WorkspaceFolders = {Dependencies = ["corlib", "SDL2"], Sedulous = ["Sedulous.Core", "Sedulous.Framework", "Sedulous.SDL"], Samples = ["Sample01_BasicApplication"], Beef = ["BeefBugs"]}
 
-[Configs.Test.Win32]
-ConfigSelections = {corlib = {Config = "Debug"}}
-
-[Configs.Test.Win64]
-ConfigSelections = {corlib = {Config = "Debug"}}
+[Workspace]
+StartupProject = "Sample01_BasicApplication"
