@@ -1,5 +1,6 @@
 FileVersion = 1
 
 [Project]
-Name = "BeefBugs"
+Name = "BeefBugs01"
 StartupObject = "BeefBugs.Program"
+DefaultNamespace = "BeefBugs"
