@@ -59,7 +59,6 @@ internal class BackgroundWorker : Worker
 	{
 		if (mThread.ThreadState == .AbortRequested)
 		{
-			// todo
 			// the worker needs to be stopped
 			// Set the worker thread state to dead
 			mIsRunning = false;
