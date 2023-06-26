@@ -37,11 +37,11 @@ class SamplePlugin : Plugin
 
 	private void OnUpdate(ApplicationUpdateInfo info)
 	{
-		mApplication.Logger.LogInformation("{0} {1} {2}", nameof(SamplePlugin), nameof(OnUpdate), info.Time.ElapsedTime);
+		//mApplication.Logger.LogInformation("{0} {1} {2}", nameof(SamplePlugin), nameof(OnUpdate), info.Time.ElapsedTime);
 	}
 
 	private void OnStateChanged(ApplicationStateChangeInfo info)
 	{
-		mApplication.Logger.LogInformation("{0} {1} {2} {}", nameof(SamplePlugin), nameof(OnStateChanged), info.PreviousState, info.CurrentState);
+		//mApplication.Logger.LogInformation("{0} {1} {2} {}", nameof(SamplePlugin), nameof(OnStateChanged), info.PreviousState, info.CurrentState);
 	}
 }

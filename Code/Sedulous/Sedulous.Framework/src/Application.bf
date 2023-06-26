@@ -4,6 +4,7 @@ using System.Threading;
 using System.Diagnostics;
 using Sedulous.Core;
 using Sedulous.Core.Logging.Abstractions;
+using Sedulous.Framework.Jobs;
 namespace Sedulous.Framework;
 
 using internal Sedulous.Core;
@@ -66,6 +67,9 @@ class Application
 	private readonly ILogger mLogger;
 	public ILogger Logger { get => mLogger; }
 
+	private readonly JobSystem mJobSystem = null;
+	public JobSystem JobSystem { get => mJobSystem; }
+
 	public this(ILogger logger, ApplicationConfiguration configuration)
 	{
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
@@ -73,12 +77,16 @@ class Application
 				mUpdateFunctions.Add(member, new .());
 			});
 
+		mJobSystem = new .(this, 4);
+
 		mLogger = logger;
 		mPlugins.AddRange(configuration.Plugins);
 	}
 
 	public ~this()
 	{
+		delete mJobSystem;
+
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
 			{
 				delete mUpdateFunctions[member];
@@ -107,6 +115,7 @@ class Application
 		{
 			return;
 		}
+		mJobSystem.Startup();
 
 		OnInitializing();
 
@@ -119,6 +128,7 @@ class Application
 
 		OnInitialized();
 		RegisterUpdateFunctions(mDefaultUpdateFunctionInfos);
+
 
 		mInitialized = true;
 	}
@@ -143,6 +153,8 @@ class Application
 
 		OnShutdown();
 		mInitialized = false;
+
+		mJobSystem.Shutdown();
 	}
 
 	internal void Update()
@@ -206,6 +218,10 @@ class Application
 			}
 			mUpdateFunctionsToUnregister.Clear();
 			SortUpdateFunctions();
+		}
+
+		{
+			mJobSystem.Update();
 		}
 
 		ProcessUpdateFunctionsToRegister();
