@@ -75,7 +75,10 @@ class Application : IMessageSubscriber<MessageId>
 	// The application event queue.
 	private readonly LocalMessageQueue<MessageId> mMessages = new .() ~ delete _;
 
-	public IMessageQueue<MessageId> Messages => mMessages;
+	//public IMessageQueue<MessageId> Messages => mMessages;
+	// exposing LocalMessageQueue<MessageId> instead of IMessageQueue<MessageId> because Beef does not allow
+	// generic method dispatch on interfaces (which we need for CreateMessage)
+	public LocalMessageQueue<MessageId> Messages => mMessages;
 
 	public this(ILogger logger, ApplicationConfiguration configuration)
 	{
@@ -98,11 +101,6 @@ class Application : IMessageSubscriber<MessageId>
 			{
 				delete mUpdateFunctions[member];
 			});
-	}
-
-	public int GetHashCode()
-	{
-		return (int)(void*)Internal.UnsafeCastToPtr(this);
 	}
 
 	void IMessageSubscriber<MessageId>.ReceiveMessage(MessageId type, MessageData data)
@@ -148,6 +146,7 @@ class Application : IMessageSubscriber<MessageId>
 
 		mMessages.Subscribe(this, ApplicationMessages.Quit);
 		mInitialized = true;
+		SetState(.Running);
 	}
 
 	internal void Shutdown()
@@ -178,6 +177,7 @@ class Application : IMessageSubscriber<MessageId>
 
 	internal void Update()
 	{
+#region Update methods
 		void SortUpdateFunctions()
 		{
 			Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
@@ -238,12 +238,12 @@ class Application : IMessageSubscriber<MessageId>
 			mUpdateFunctionsToUnregister.Clear();
 			SortUpdateFunctions();
 		}
+#endregion
 
 		{
 			ProcessMessages();
 			mJobSystem.Update();
 		}
-
 		ProcessUpdateFunctionsToRegister();
 		ProcessUpdateFunctionsToUnregister();
 
@@ -308,6 +308,10 @@ class Application : IMessageSubscriber<MessageId>
 					State = mState,
 					Time = mPostUpdateTimeTracker.Increment(TimeSpan(elapsedTicks), false)
 				});
+		}
+
+		{
+			ProcessMessages();
 		}
 	}
 

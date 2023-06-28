@@ -129,5 +129,8 @@ public sealed class ExpandingPoolRegistry
     }
 
     // The pools for each type.
-    private readonly Dictionary<Type, IPool> pools = new .() ~ DeleteDictionaryAndValues!(_);
+    private readonly Dictionary<Type, IPool> pools = new .() ~ {
+		DestroyAll();
+		delete _;
+	};
 }

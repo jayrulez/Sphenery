@@ -2,6 +2,7 @@ using System;
 using Sedulous.SDL;
 using Sedulous.Framework;
 using Sedulous.Framework.Platform;
+using Sedulous.Framework.Platform.Window;
 namespace Sample01_BasicApplication;
 
 class Program : SDLApplicationHost

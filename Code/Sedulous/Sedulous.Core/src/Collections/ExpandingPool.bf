@@ -13,7 +13,7 @@ public class ExpandingPool<T> : Pool<T>
 	/// <param name="capacity">The pool's initial capacity.</param>
 	/// <param name="allocator">A function which allocates new instances of <typeparamref name="T"/>.</param>
 	/// <param name="deallocator">An action which is performed on objects which are being returned to the pool.</param>
-	public this(int32 capacity, delegate T() allocator = null, delegate void(T) deallocator = null)
+	public this(int32 capacity, delegate T() allocator = null, delegate void(T instance) deallocator = null)
 		: this(capacity, int32.MaxValue, allocator, deallocator)
 	{
 	}
@@ -25,7 +25,7 @@ public class ExpandingPool<T> : Pool<T>
 	/// <param name="watermark">The pool's watermark value, which indicates the maximum size of the pool.</param>
 	/// <param name="allocator">A function which allocates new instances of <typeparamref name="T"/>.</param>
 	/// <param name="deallocator">An action which is performed on objects which are being returned to the pool.</param>
-	public this(int32 capacity, int32 watermark, delegate T() allocator = null, delegate void(T) deallocator = null)
+	public this(int32 capacity, int32 watermark, delegate T() allocator = null, delegate void(T instance) deallocator = null)
 	{
 		//Contract.EnsureRange(capacity >= 0, nameof(capacity));
 		//Contract.EnsureRange(watermark >= 1, nameof(watermark));
@@ -33,7 +33,7 @@ public class ExpandingPool<T> : Pool<T>
 
 		this.watermark = watermark;
 		this.allocator = allocator ?? CreateDefaultAllocator();
-		this.deallocator = deallocator;
+		this.deallocator = deallocator ?? CreateDefaultDestructor();
 		for (var interfaceType in typeof(T).Interfaces)
 		{
 			if (interfaceType.TypeId == typeof(IDisposable).TypeId)
@@ -197,7 +197,7 @@ public class ExpandingPool<T> : Pool<T>
 
 	// The underlying storage for the object pool.
 	private readonly delegate T() allocator~ { if (_ != null) delete _; };
-	private readonly delegate void(T) deallocator~ { if (_ != null) delete _; };
+	private readonly delegate void(T instance) deallocator~ { if (_ != null) delete _; };
 	private readonly bool disposable;
 	private T[] storage~ { if (_ != null) delete _; };
 	private int32 count;
