@@ -25,7 +25,7 @@ class SDLMouseDevice : MouseDevice, IMessageSubscriber<MessageId>
 	private IWindow window;
 
 	// State values.
-	private InternalButtonState[] states;
+	private InternalButtonState[] states ~ delete _;
 	private uint32 buttonStateClicks;
 	private uint32 buttonStateDoubleClicks;
 	private bool ignoredFirstMouseMotionEvent;

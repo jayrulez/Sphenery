@@ -9,6 +9,7 @@ using Sedulous.Framework.Platform.Window;
 using Sedulous.SDL.Platform.Window;
 using Sedulous.SDL.Platform.Input;
 using System.Diagnostics;
+using Sedulous.Core.Logging.Abstractions;
 namespace Sedulous.SDL;
 
 using internal Sedulous.Framework;
@@ -37,15 +38,21 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 	private bool mExitRequested;
 
 	private SDLPlatform mPlatform = null;
+	public IPlatform Platform => mPlatform;
+
 	private SDLWindow mPrimaryWindow = null;
 	private Application mApplication = null;
 	private readonly ApplicationTimeTracker mHostUpdateTimeTracker = new .() ~ delete _;
 	private readonly Stopwatch mTimer = new .() ~ delete _;
 
+	private readonly ILogger mLogger;
+	public ILogger Logger => mLogger;
+
 	private readonly WindowConfiguration mPrimaryWindowConfiguration;
 
-	public this(WindowConfiguration primaryWindowConfiguration)
+	public this(ILogger logger, WindowConfiguration primaryWindowConfiguration)
 	{
+		mLogger = logger;
 		mPrimaryWindowConfiguration = primaryWindowConfiguration;
 	}
 
@@ -79,7 +86,7 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 		defer DestroyApplication(mApplication);
 
 		mPlatform = new SDLPlatform(mApplication);
-		defer delete mApplication;
+		defer delete mPlatform;
 
 		SDL.SetEventFilter( => SDLEventFilter, Internal.UnsafeCastToPtr(mApplication));
 		defer SDL.SetEventFilter(null, null);
@@ -102,7 +109,7 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 		{
 			if (let sdlInputSystem = mPlatform.InputSystem as SDLInputSystem)
 			{
-				//sdlInputSystem.ResetDeviceStates();
+				sdlInputSystem.ResetDeviceStates();
 			}
 
 			if (!PumpEvents())

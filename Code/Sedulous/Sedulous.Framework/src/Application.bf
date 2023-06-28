@@ -15,6 +15,10 @@ class Application : IMessageSubscriber<MessageId>
 {
 	private readonly Monitor mMonitor = new .() ~ delete _;
 
+	private readonly IApplicationHost mHost;
+
+	public readonly IApplicationHost Host => mHost;
+
 	private readonly List<Plugin> mPlugins = new .() ~ delete _;
 
 	// Current tick state.
@@ -80,7 +84,7 @@ class Application : IMessageSubscriber<MessageId>
 	// generic method dispatch on interfaces (which we need for CreateMessage)
 	public LocalMessageQueue<MessageId> Messages => mMessages;
 
-	public this(ILogger logger, ApplicationConfiguration configuration)
+	public this(IApplicationHost host, ApplicationConfiguration configuration)
 	{
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
 			{
@@ -89,7 +93,8 @@ class Application : IMessageSubscriber<MessageId>
 
 		mJobSystem = new .(this, 4);
 
-		mLogger = logger;
+		mHost = host;
+		mLogger = host.Logger;
 		mPlugins.AddRange(configuration.Plugins);
 	}
 

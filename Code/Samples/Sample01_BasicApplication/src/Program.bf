@@ -3,13 +3,16 @@ using Sedulous.SDL;
 using Sedulous.Framework;
 using Sedulous.Framework.Platform;
 using Sedulous.Framework.Platform.Window;
+using Sedulous.Core.Logging.Abstractions;
+using Sedulous.Foundation.Logging.Debug;
 namespace Sample01_BasicApplication;
 
 class Program : SDLApplicationHost
 {
 	private readonly SamplePlugin mSamplePlugin = new .() ~ delete _;
+	private readonly ILogger mLogger ~ delete _;
 
-	public this(WindowConfiguration primaryWindowConfiguration) : base(primaryWindowConfiguration)
+	public this(WindowConfiguration primaryWindowConfiguration) : base(mLogger = new DebugLogger(.Trace), primaryWindowConfiguration)
 	{
 	}
 
@@ -17,7 +20,7 @@ class Program : SDLApplicationHost
 	{
 		configuration.AddPlugin(mSamplePlugin);
 
-		return new SampleApplication(configuration);
+		return new SampleApplication(this, configuration);
 	}
 
 	protected override void DestroyApplication(Application application)

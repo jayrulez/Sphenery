@@ -12,12 +12,14 @@ class SDLPlatform : IPlatform
 	public IWindowSystem WindowSystem => mWindowSystem;
 	public IInputSystem InputSystem => mInputSystem;
 
-	private readonly SDLWindowSystem mWindowSystem = new .(this) ~ delete _;
-	private readonly SDLInputSystem mInputSystem = new .(this) ~ delete _;
+	private readonly SDLWindowSystem mWindowSystem ~ delete _;
+	private readonly SDLInputSystem mInputSystem ~ delete _;
 	private readonly Application mApplication;
 
 	public this(Application application)
 	{
 		mApplication = application;
+		mWindowSystem = new .(this);
+		mInputSystem = new .(this);
 	}
 }
