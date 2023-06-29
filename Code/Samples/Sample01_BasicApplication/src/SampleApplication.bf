@@ -77,6 +77,16 @@ class SampleApplication : Application
 			Logger.LogInformation("Left mouse button clicked.");
 		}
 
+		if (Host.Platform.InputSystem.GetMouse().IsButtonDown(.Left))
+		{
+			Logger.LogInformation("Left mouse button down.");
+		}
+
+		if (Host.Platform.InputSystem.GetKeyboard().IsKeyPressed(.Space))
+		{
+			Logger.LogInformation("Space key pressed.");
+		}
+
 		//double fps = 1000 / info.Time.ElapsedTime.TotalMilliseconds;
 		//mLogger.LogInformation("{0} {1} {2}", nameof(OnUpdate), info.Time.ElapsedTime, fps);
 	}

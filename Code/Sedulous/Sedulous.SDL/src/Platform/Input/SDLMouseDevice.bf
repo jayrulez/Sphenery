@@ -53,7 +53,11 @@ class SDLMouseDevice : MouseDevice, IMessageSubscriber<MessageId>
 		var buttonCount = Enum.GetCount<MouseButton>();
 		this.states = new InternalButtonState[buttonCount];
 
-		inputSystem.Platform.Application.Messages.Subscribe(this, SDLMessages.SDLEvent);
+		InputSystem.Platform.Application.Messages.Subscribe(this, SDLMessages.SDLEvent);
+	}
+
+	public ~this(){
+		InputSystem.Platform.Application.Messages.Unsubscribe(this);
 	}
 
 	void IMessageSubscriber<MessageId>.ReceiveMessage(MessageId type, MessageData data)

@@ -46,11 +46,18 @@ public delegate void TextInputEventHandler(IWindow window, KeyboardDevice device
 /// </summary>
 public abstract class KeyboardDevice : InputDevice<Scancode>
 {
-    /// Initializes a new instance of the <see cref="KeyboardDevice"/> class.
-    public this()
-    {
+	private readonly IInputSystem mInputSystem;
 
-    }
+	public IInputSystem InputSystem => mInputSystem;
+
+	/// <summary>
+    /// Initializes a new instance of the <see cref="KeyboardDevice"/> class.
+	/// </summary>
+	/// <param name="context">The Sedulous context.</param>
+	public this(IInputSystem inputSystem)
+	{
+		mInputSystem = inputSystem;
+	}
 
     /// <summary>
     /// Populates the specified <see cref="StringBuilder"/> with the most recent text input.

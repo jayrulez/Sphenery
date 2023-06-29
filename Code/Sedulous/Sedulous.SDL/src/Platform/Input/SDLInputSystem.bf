@@ -24,7 +24,7 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 	//private readonly SoftwareKeyboardService softwareKeyboardService;
 
 	// Input devices.
-	private SDLKeyboardDevice keyboard;
+	private SDLKeyboardDevice keyboard ~ delete _;
 	private SDLMouseDevice mouse ~ delete _;
 	//private GamePadDeviceInfo gamePadInfo;
 	private SDLGamePadDevice primaryGamePad;
@@ -37,7 +37,7 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 
 		//this.softwareKeyboardService = context.GetFactoryMethod<SoftwareKeyboardServiceFactory>()();
 
-		//this.keyboard = new SDL2KeyboardDevice(context);
+		this.keyboard = new SDLKeyboardDevice(this);
 		this.mouse = new SDLMouseDevice(this);
 		//this.gamePadInfo = new GamePadDeviceInfo(context);
 		//this.gamePadInfo.GamePadConnected += OnGamePadConnected;
@@ -80,7 +80,7 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 	{
 	    //Contract.EnsureNotDisposed(this, Disposed);
 
-	    //this.keyboard.ResetDeviceState();
+	    this.keyboard.ResetDeviceState();
 	    this.mouse.ResetDeviceState();
 	    //this.gamePadInfo.ResetDeviceStates();
 	    //this.touchInfo.ResetDeviceStates();
@@ -90,7 +90,7 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 	{
 	    //Contract.EnsureNotDisposed(this, Disposed);
 
-	    //this.keyboard.Update(time);
+	    this.keyboard.Update(time);
 	    this.mouse.Update(time);
 	    //this.gamePadInfo.Update(time);
 	    //this.touchInfo.Update(time);
@@ -126,14 +126,12 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 
 	public bool IsKeyboardRegistered()
 	{
-            //return keyboard.IsRegistered;
-		return default;
+            return keyboard.IsRegistered;
 	}
 
 	public KeyboardDevice GetKeyboard()
 	{
-		//return keyboard;
-		return default;
+		return keyboard;
 	}
 
 	public bool IsMouseSupported()
@@ -329,14 +327,14 @@ class SDLInputSystem : IInputSystem, IMessageSubscriber<MessageId>
 	/// </summary>
 	/// <param name="device">The device to register.</param>
 	/// <returns><see langword="true"/> if the device was registered; otherwise, <see langword="false"/>.</returns>
-	/*internal bool RegisterKeyboardDevice(SDLKeyboardDevice device)
+	internal bool RegisterKeyboardDevice(SDLKeyboardDevice device)
 	{
 	    if (device.IsRegistered)
 	        return false;
 
 	    KeyboardRegistered?.Invoke(device);
 	    return true;
-	}*/
+	}
 
 	/// <summary>
 	/// Registers the specified device as having received user input.
