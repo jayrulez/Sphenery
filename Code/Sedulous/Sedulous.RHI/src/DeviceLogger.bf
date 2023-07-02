@@ -1,12 +1,12 @@
 using System;
-namespace Sedulous.RHI.Implementation;
+namespace Sedulous.RHI;
 
 class DeviceLogger
 {
 	private readonly GraphicsAPI m_GraphicsAPI;
-	private readonly CallbackInterface* m_CallbackInterface;
+	private readonly CallbackInterface m_CallbackInterface;
 
-	public this(GraphicsAPI graphicsAPI, CallbackInterface* callbackInterface)
+	public this(GraphicsAPI graphicsAPI, CallbackInterface callbackInterface)
 	{
 		m_GraphicsAPI = graphicsAPI;
 		m_CallbackInterface = callbackInterface;

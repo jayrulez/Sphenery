@@ -30,7 +30,7 @@ class WaitIdleHelper
 
 		for (uint32 i = 0; i < physicalDeviceNum; i++)
 		{
-			m_CommandQueue.Signal(m_Fence, 1);
+			m_Fence.QueueSignal(m_CommandQueue, 1);
 			m_Fence.Wait(1);
 		}
 

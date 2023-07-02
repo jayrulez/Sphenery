@@ -227,7 +227,7 @@ class DataUploadHelper
 
 			m_CommandQueue.Submit(queueSubmitDesc);
 
-			m_CommandQueue.Signal(m_Fence, m_FenceValue);
+			m_Fence.QueueSignal(m_CommandQueue, m_FenceValue);
 			m_Fence.Wait(m_FenceValue);
 
 			m_FenceValue++;

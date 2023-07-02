@@ -1,4 +1,5 @@
 using System;
+using Sedulous.RHI.Implementation;
 namespace Sedulous.RHI;
 
 static
@@ -670,12 +671,113 @@ static
 
 	public static uint32 NRIFormatToDXGIFormatD3D12(Format format){
 
-	}
-
-	public static uint32 NRIFormatToVKFormat(Format format){
-
 	}*/
 
 	public static  uint32 GetPhysicalDeviceGroupMask(uint32 mask)
 		{ return mask == WHOLE_DEVICE_GROUP ? 0xff : mask; }
+}
+
+static{
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4, var arg5)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4, arg5);
+
+			return returnCode;
+		}
+	}
+
+	public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, var arg1, var arg2, var arg3, var arg4, var arg5, var arg6)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, arg1, arg2, arg3, arg4, arg5, arg6);
+
+			return returnCode;
+		}
+	}
+
+	/*public static mixin RETURN_ON_FAILURE<T>(DeviceLogger logger, bool condition, T returnCode, StringView format, params Object[] args)
+	{
+		if (!condition)
+		{
+			logger.ReportMessage(.TYPE_ERROR, format, params args);
+
+			return returnCode;
+		}
+	}*/
+
+	public static void REPORT_INFO(DeviceLogger logger, StringView format, params Object[] args)
+	{
+		logger.ReportMessage(.TYPE_INFO, format, params args);
+	}
+
+	public static void REPORT_WARNING(DeviceLogger logger, StringView format, params Object[] args)
+	{
+		logger.ReportMessage(.TYPE_WARNING, format, params args);
+	}
+
+	public static void REPORT_ERROR(DeviceLogger logger, StringView format, params Object[] args)
+	{
+		logger.ReportMessage(.TYPE_ERROR, format, params args);
+	}
+
+	public static void CHECK(DeviceLogger logger, bool condition, StringView format, params Object[] args)
+	{
+#if DEBUG
+		if (!condition)
+			logger.ReportMessage(.TYPE_ERROR, format, params args);
+#endif
+	}
 }

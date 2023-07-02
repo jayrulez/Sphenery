@@ -603,6 +603,7 @@ enum DescriptorSetBindingBits: uint8 {
 }
 #pragma format restore
 
+[CRepr]
 struct Rect
 {
 	public int32 left;
@@ -611,6 +612,7 @@ struct Rect
 	public uint32 height;
 }
 
+[CRepr]
 struct Viewport
 {
 	public float[2] offset;
@@ -619,6 +621,7 @@ struct Viewport
 	public float depthRangeMax;
 }
 
+[CRepr]
 struct Color32f
 {
 	public float x;
@@ -627,6 +630,7 @@ struct Color32f
 	public float w;
 }
 
+[CRepr]
 struct Color32ui
 {
 	public uint32 x;
@@ -635,6 +639,7 @@ struct Color32ui
 	public uint32 w;
 }
 
+[CRepr]
 struct Color32i
 {
 	public int32 x;
@@ -643,12 +648,14 @@ struct Color32i
 	public int32 w;
 }
 
+[CRepr]
 struct DepthStencilClearValue
 {
 	public float depth;
 	public uint8 stencil;
 }
 
+[CRepr]
 [Union] struct ClearValueDesc
 {
 	public DepthStencilClearValue depthStencil;
@@ -657,6 +664,7 @@ struct DepthStencilClearValue
 	public Color32i color32i;
 }
 
+[CRepr]
 struct ClearDesc
 {
 	public ClearValueDesc value;
@@ -664,6 +672,7 @@ struct ClearDesc
 	public uint32 colorAttachmentIndex;
 }
 
+[CRepr]
 struct ClearStorageBufferDesc
 {
 	/*const*/ public IDescriptor /***/ storageBuffer;
@@ -673,6 +682,7 @@ struct ClearStorageBufferDesc
 	public uint32 offsetInRange;
 }
 
+[CRepr]
 struct ClearStorageTextureDesc
 {
 	/*const*/ public IDescriptor /***/ storageTexture;
@@ -682,6 +692,7 @@ struct ClearStorageTextureDesc
 	public uint32 offsetInRange;
 }
 
+[CRepr]
 struct TextureRegionDesc
 {
 	public uint16[3] offset;
@@ -690,6 +701,7 @@ struct TextureRegionDesc
 	public uint16 arrayOffset;
 }
 
+[CRepr]
 struct TextureDataLayoutDesc
 {
 	public uint64 offset;
@@ -697,6 +709,7 @@ struct TextureDataLayoutDesc
 	public uint32 slicePitch;
 }
 
+[CRepr]
 struct QueueSubmitDesc
 {
 	/*const*/ public ICommandBuffer* /*const**/ commandBuffers;
@@ -704,6 +717,7 @@ struct QueueSubmitDesc
 	public uint32 physicalDeviceIndex;
 }
 
+[CRepr]
 struct BufferMemoryBindingDesc
 {
 	public IMemory /***/ memory;
@@ -712,6 +726,7 @@ struct BufferMemoryBindingDesc
 	public uint32 physicalDeviceMask;
 }
 
+[CRepr]
 struct TextureMemoryBindingDesc
 {
 	public IMemory /***/ memory;
@@ -941,10 +956,10 @@ struct PushConstantDesc
 
 struct SPIRVBindingOffsets
 {
-	uint32 samplerOffset;
-	uint32 textureOffset;
-	uint32 constantBufferOffset;
-	uint32 storageTextureAndBufferOffset;
+	public uint32 samplerOffset;
+	public uint32 textureOffset;
+	public uint32 constantBufferOffset;
+	public uint32 storageTextureAndBufferOffset;
 }
 
 struct ShaderDesc
@@ -970,15 +985,15 @@ struct VertexAttributeDesc
 {
 	public VertexAttributeD3D  d3d;
 	public VertexAttributeVK  vk;
-	uint32 offset;
+	public uint32 offset;
 	public Format  format;
-	uint16 streamIndex;
+	public uint16 streamIndex;
 }
 
 struct VertexStreamDesc
 {
-	uint32 stride;
-	uint16 bindingSlot;
+	public uint32 stride;
+	public uint16 bindingSlot;
 	public VertexStreamStepRate  stepRate;
 }
 
@@ -986,35 +1001,35 @@ struct InputAssemblyDesc
 {
 	/*const*/ public VertexAttributeDesc* attributes;
 	/*const*/ public VertexStreamDesc* streams;
-	uint8 attributeNum;
-	uint8 streamNum;
+	public uint8 attributeNum;
+	public uint8 streamNum;
 	public Topology  topology;
-	uint8 tessControlPointNum;
+	public uint8 tessControlPointNum;
 	public PrimitiveRestart  primitiveRestart;
 }
 
 struct SamplePosition
 {
-	int8 x;
-	int8 y;
+	public int8 x;
+	public int8 y;
 }
 
 struct RasterizationDesc
 {
-	uint32 viewportNum;
-	int32 depthBiasConstantFactor;
-	float depthBiasClamp;
-	float depthBiasSlopeFactor;
+	public uint32 viewportNum;
+	public int32 depthBiasConstantFactor;
+	public float depthBiasClamp;
+	public float depthBiasSlopeFactor;
 	public FillMode  fillMode;
 	public CullMode  cullMode;
-	uint16 sampleMask;
-	uint8 sampleNum;
-	bool alphaToCoverage;
-	bool frontCounterClockwise;
-	bool depthClamp;
-	bool antialiasedLines;
-	bool rasterizerDiscard;
-	bool conservativeRasterization;
+	public uint16 sampleMask;
+	public uint8 sampleNum;
+	public bool alphaToCoverage;
+	public bool frontCounterClockwise;
+	public bool depthClamp;
+	public bool antialiasedLines;
+	public bool rasterizerDiscard;
+	public bool conservativeRasterization;
 }
 
 struct StencilDesc
@@ -1038,23 +1053,23 @@ struct ColorAttachmentDesc
 	public BlendingDesc  colorBlend;
 	public BlendingDesc  alphaBlend;
 	public ColorWriteBits  colorWriteMask;
-	bool blendEnabled;
+	public bool blendEnabled;
 }
 
 // CompareFunc::NONE = depth/stencil test disabled
 struct DepthAttachmentDesc
 {
 	public CompareFunc  compareFunc;
-	bool write;
+	public bool write;
 }
 
 struct StencilAttachmentDesc
 {
 	public StencilDesc  front;
 	public StencilDesc  back;
-	uint8 reference;
-	uint8 compareMask;
-	uint8 writeMask;
+	public uint8 reference;
+	public uint8 compareMask;
+	public uint8 writeMask;
 }
 
 struct OutputMergerDesc
@@ -1064,7 +1079,7 @@ struct OutputMergerDesc
 	public StencilAttachmentDesc  stencil;
 	public Format  depthStencilFormat;
 	public LogicFunc  colorLogicFunc;
-	uint32 colorNum;
+	public uint32 colorNum;
 	public Color32f  blendConsts;
 }
 
@@ -1072,10 +1087,10 @@ struct PipelineLayoutDesc
 {
 	/*const*/ public DescriptorSetDesc* descriptorSets;
 	/*const*/ public PushConstantDesc* pushConstants;
-	uint32 descriptorSetNum;
-	uint32 pushConstantNum;
+	public uint32 descriptorSetNum;
+	public uint32 pushConstantNum;
 	public PipelineLayoutShaderStageBits  stageMask;
-	bool ignoreGlobalSPIRVOffsets;
+	public bool ignoreGlobalSPIRVOffsets;
 }
 
 struct GraphicsPipelineDesc
@@ -1085,7 +1100,7 @@ struct GraphicsPipelineDesc
 	/*const*/ public RasterizationDesc* rasterization;
 	/*const*/ public OutputMergerDesc* outputMerger;
 	/*const*/ public ShaderDesc* shaderStages;
-	uint32 shaderStageNum;
+	public uint32 shaderStageNum;
 }
 
 struct ComputePipelineDesc
@@ -1100,33 +1115,33 @@ struct FrameBufferDesc
 	/*const*/ public IDescriptor /***/ depthStencilAttachment;
 	/*const*/ public ClearValueDesc* colorClearValues;
 	/*const*/ public ClearValueDesc* depthStencilClearValue;
-	uint32 colorAttachmentNum;
-	uint32 physicalDeviceMask;
-	uint16[2] size;
-	uint16 layerNum;
+	public uint32 colorAttachmentNum;
+	public uint32 physicalDeviceMask;
+	public uint16[2] size;
+	public uint16 layerNum;
 }
 
 struct QueryPoolDesc
 {
 	public QueryType queryType;
-	uint32 capacity;
+	public uint32 capacity;
 	public PipelineStatsBits pipelineStatsMask;
-	uint32 physicalDeviceMask;
+	public uint32 physicalDeviceMask;
 }
 
 struct PipelineStatisticsDesc
 {
-	uint64 inputVertices;
-	uint64 inputPrimitives;
-	uint64 vertexShaderInvocations;
-	uint64 geometryShaderInvocations;
-	uint64 geometryShaderPrimitives;
-	uint64 rasterizerInPrimitives;
-	uint64 rasterizerOutPrimitives;
-	uint64 fragmentShaderInvocations;
-	uint64 tessControlInvocations;
-	uint64 tessEvaluationInvocations;
-	uint64 computeShaderInvocations;
+	public uint64 inputVertices;
+	public uint64 inputPrimitives;
+	public uint64 vertexShaderInvocations;
+	public uint64 geometryShaderInvocations;
+	public uint64 geometryShaderPrimitives;
+	public uint64 rasterizerInPrimitives;
+	public uint64 rasterizerOutPrimitives;
+	public uint64 fragmentShaderInvocations;
+	public uint64 tessControlInvocations;
+	public uint64 tessEvaluationInvocations;
+	public uint64 computeShaderInvocations;
 }
 
 struct DeviceDesc
@@ -1431,7 +1446,7 @@ struct AccelerationStructureMemoryBindingDesc
 
 struct StridedBufferRegion
 {
-	public BufferAliasingBarrierDesc* buffer;
+	public IBuffer buffer;
 	public uint64 offset;
 	public uint64 size;
 	public uint64 stride;

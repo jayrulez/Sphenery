@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Framework" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Vulkan" = "*", "Sedulous.SDL" = "*"}
+
+[Project]
+Name = "Samples02_RHI"
+StartupObject = "Samples02_RHI.Program"

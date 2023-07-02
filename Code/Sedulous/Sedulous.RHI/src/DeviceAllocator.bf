@@ -1,5 +1,5 @@
 using System;
-namespace Sedulous.RHI.Implementation;
+namespace Sedulous.RHI;
 
 static
 {
@@ -44,9 +44,14 @@ static
 		memoryAllocatorInterface.Free = => AlignedFree;
 	}
 
+	public static uint8* Align(uint8* x, uint alignment)
+	{
+		return (uint8*)(void*)(int)(((uint)(int)(void*)x + alignment - 1) & ~(alignment - 1));
+	}
+
 	public static T Align<T>(T x, uint alignment) where T : var
 	{
-		return (T)((uint(x) + alignment - 1) & ~(alignment - 1));
+		return (T)(((uint)x + alignment - 1) & ~(alignment - 1));
 	}
 
 	public static mixin Allocate<T>(DeviceAllocator<uint8> allocator) where T : var
@@ -230,7 +235,7 @@ static
 		return (uint)((int)arraySize * sizeof(T) + alignof(T));
 	}
 
-	public static mixin ALLOCATE_SCRATCH<T>(Device device, uint arraySize) where T : var
+	public static mixin ALLOCATE_SCRATCH<T>(IDevice device, uint arraySize) where T : var
 	{
 		T* data = null;
 
@@ -249,7 +254,7 @@ static
 		data
 	}
 
-	public static mixin FREE_SCRATCH<T>(Device device, T* array, uint arraySize) where T : var
+	public static mixin FREE_SCRATCH<T>(IDevice device, T* array, uint arraySize) where T : var
 	{
 		if (array != null && CountStackAllocationSize<T>(arraySize) > STACK_ALLOC_MAX_SIZE)
 		{
