@@ -272,7 +272,7 @@ static
 
 class DeviceVK : Device, IDevice, IDeviceVK
 {
-	private Monitor m_Monitor;
+	private Monitor m_Monitor = new .() ~ delete _;
 	private List<VkPhysicalDevice> m_PhysicalDevices;
 	private List<uint32> m_PhysicalDeviceIndices;
 	private List<uint32> m_ConcurrentSharingModeQueueIndices;
@@ -895,6 +895,7 @@ class DeviceVK : Device, IDevice, IDeviceVK
 
 	public void DestroyCommandBuffer(ICommandBuffer commandBuffer)
 	{
+		Deallocate!(GetAllocator(), (CommandBufferVK)commandBuffer);
 	}
 
 	public void DestroyDescriptorPool(IDescriptorPool descriptorPool)

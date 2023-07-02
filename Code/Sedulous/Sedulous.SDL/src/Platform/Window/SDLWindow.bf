@@ -9,11 +9,15 @@ using internal Sedulous.SDL.Platform.Window;
 
 class SDLWindow : IWindow
 {
-        // State values.
+	// State values.
 	private SDL.Window* mSDLNativeWindow;
-        private WindowMode windowMode = WindowMode.Windowed;
-        private WindowStatusFlags windowStatus = WindowStatusFlags.None;
-	
+	private WindowMode windowMode = WindowMode.Windowed;
+	private WindowStatusFlags windowStatus = WindowStatusFlags.None;
+
+	private readonly NativePointerRegistry mNativePointers = new .() ~ delete _;
+
+	public NativePointerRegistry NativePointers => mNativePointers;
+
 	// Property values.
 	private Point2? windowedPosition;
 	private Size2? windowedClientSize;
@@ -37,33 +41,35 @@ class SDLWindow : IWindow
 	/// <inheritdoc/>
 	public Size2 ClientSize
 	{
-	    get
-	    {
-	        //Contract.EnsureNotDisposed(this, Disposed);
+		get
+		{
+			//Contract.EnsureNotDisposed(this, Disposed);
 
-	        SDL.GetWindowSize(mSDLNativeWindow, var w, var h);
-	        return Size2(w, h);
-	    }
-	    set
-	    {
-	        //Contract.EnsureNotDisposed(this, Disposed);
+			SDL.GetWindowSize(mSDLNativeWindow, var w, var h);
+			return Size2(w, h);
+		}
+		set
+		{
+			//Contract.EnsureNotDisposed(this, Disposed);
 
-	        if (GetWindowMode() == WindowMode.Windowed && GetWindowState() == WindowState.Normal)
-	        {
-	            windowedClientSize = value;
-	        }
+			if (GetWindowMode() == WindowMode.Windowed && GetWindowState() == WindowState.Normal)
+			{
+				windowedClientSize = value;
+			}
 
-	        SDL.SetWindowSize(mSDLNativeWindow, value.Width, value.Height);
-	    }
+			SDL.SetWindowSize(mSDLNativeWindow, value.Width, value.Height);
+		}
 	}
 
 	public this(StringView title, int32 width, int32 height, bool visible)
 	{
+		mWidth = width;
+		mHeight = height;
 		SDL.WindowFlags flags = SDL.WindowFlags.Resizable;
 		if (visible)
 			flags |= .Shown;
 
-		mSDLNativeWindow = SDL.CreateWindow(mTitle.CStr(), .Undefined, .Undefined, (int32)width, (int32)height, flags);
+		mSDLNativeWindow = SDL.CreateWindow(mTitle.CStr(), .Undefined, .Undefined, (int32)mWidth, (int32)mHeight, flags);
 
 		if (mSDLNativeWindow == null)
 		{
@@ -78,6 +84,7 @@ class SDLWindow : IWindow
 		SDL.SDL_SYSWM_TYPE subsystem = info.subsystem;
 		switch (subsystem) {
 		case SDL.SDL_SYSWM_TYPE.SDL_SYSWM_WINDOWS:
+			mNativePointers.Set("hwnd", (void*)(int)info.info.win.window);
 			/*OSNativeWindow = (void*)(int)info.info.win.window;
 			SurfaceInfo = .(.()
 				{
@@ -106,134 +113,134 @@ class SDLWindow : IWindow
 	/// <inheritdoc/>
 	public void WarpMouseWithinWindow(int32 x, int32 y)
 	{
-	    //Contract.EnsureNotDisposed(this, Disposed);
+		//Contract.EnsureNotDisposed(this, Disposed);
 
-	    SDL.WarpMouseInWindow(mSDLNativeWindow, x, y);
+		SDL.WarpMouseInWindow(mSDLNativeWindow, x, y);
 	}
 
 	/// <inheritdoc/>
 	public void SetWindowMode(WindowMode mode)
 	{
-	    //Contract.EnsureNotDisposed(this, Disposed);
+		//Contract.EnsureNotDisposed(this, Disposed);
 
-	    if (windowMode == mode)
-	        return;
+		if (windowMode == mode)
+			return;
 
-	    /*UpdateWindowedPosition(Position);
-	    UpdateWindowedClientSize(ClientSize);
+		/*UpdateWindowedPosition(Position);
+		UpdateWindowedClientSize(ClientSize);
 
-	    switch (mode)
-	    {
-	        case WindowMode.Windowed:
-	            {
-	                if (SDL.SetWindowFullscreen(mSDLNativeWindow, 0) < 0)
-	                    Runtime.FatalError("Failed to set window fullscreen");
+		switch (mode)
+		{
+			case WindowMode.Windowed:
+				{
+					if (SDL.SetWindowFullscreen(mSDLNativeWindow, 0) < 0)
+						Runtime.FatalError("Failed to set window fullscreen");
 
-	                var x = windowedPosition?.X ?? FrameworkConfiguration.DefaultWindowPositionX;
-	                var y = windowedPosition?.Y ?? FrameworkConfiguration.DefaultWindowPositionY;
-	                var w = windowedClientSize?.Width ?? FrameworkConfiguration.DefaultWindowClientWidth;
-	                var h = windowedClientSize?.Height ?? FrameworkConfiguration.DefaultWindowClientHeight;
+					var x = windowedPosition?.X ?? FrameworkConfiguration.DefaultWindowPositionX;
+					var y = windowedPosition?.Y ?? FrameworkConfiguration.DefaultWindowPositionY;
+					var w = windowedClientSize?.Width ?? FrameworkConfiguration.DefaultWindowClientWidth;
+					var h = windowedClientSize?.Height ?? FrameworkConfiguration.DefaultWindowClientHeight;
 
-	                if (!ApplyWin32FullscreenWindowedFix_Windowed())
-	                    SDL.SetWindowBordered(mSDLNativeWindow, true);
+					if (!ApplyWin32FullscreenWindowedFix_Windowed())
+						SDL.SetWindowBordered(mSDLNativeWindow, true);
 
-	                SDL.SetWindowSize(mSDLNativeWindow, w, h);
-	                SDL.SetWindowPosition(mSDLNativeWindow, x, y);
+					SDL.SetWindowSize(mSDLNativeWindow, w, h);
+					SDL.SetWindowPosition(mSDLNativeWindow, x, y);
 
-	                if (FrameworkContext.Platform == FrameworkPlatform.Windows)
-	                    win32CachedStyle = IntPtr.Zero;
-	            }
-	            break;
+					if (FrameworkContext.Platform == FrameworkPlatform.Windows)
+						win32CachedStyle = IntPtr.Zero;
+				}
+				break;
 
-	        case WindowMode.Fullscreen:
-	            {
-	                if (displayMode != null)
-	                {
-	                    if (displayMode.DisplayIndex.HasValue)
-	                    {
-	                        var display = FrameworkContext.GetPlatform().Displays[displayMode.DisplayIndex.Value];
-	                        ChangeDisplay(display);
-	                    }
-	                }
-	                else
-	                {
-	                    SetDesktopDisplayMode();
-	                }
+			case WindowMode.Fullscreen:
+				{
+					if (displayMode != null)
+					{
+						if (displayMode.DisplayIndex.HasValue)
+						{
+							var display = FrameworkContext.GetPlatform().Displays[displayMode.DisplayIndex.Value];
+							ChangeDisplay(display);
+						}
+					}
+					else
+					{
+						SetDesktopDisplayMode();
+					}
 
-	                if (SDL.SetWindowFullscreen(mSDLNativeWindow, (uint32)SDL_WINDOW_FULLSCREEN) < 0)
-	                    throw new SDL2Exception();
+					if (SDL.SetWindowFullscreen(mSDLNativeWindow, (uint32)SDL_WINDOW_FULLSCREEN) < 0)
+						throw new SDL2Exception();
 
-	                if (FrameworkContext.Platform == FrameworkPlatform.Windows)
-	                    win32CachedStyle = IntPtr.Zero;
-	            }
-	            break;
+					if (FrameworkContext.Platform == FrameworkPlatform.Windows)
+						win32CachedStyle = IntPtr.Zero;
+				}
+				break;
 
-	        case WindowMode.FullscreenWindowed:
-	            {
-	                if (SDL.SetWindowFullscreen(mSDLNativeWindow, 0) < 0)
-	                    Runtime.FatalError("Failed to set window fullscreen");
+			case WindowMode.FullscreenWindowed:
+				{
+					if (SDL.SetWindowFullscreen(mSDLNativeWindow, 0) < 0)
+						Runtime.FatalError("Failed to set window fullscreen");
 
-	                var displayBounds = Display.Bounds;
+					var displayBounds = Display.Bounds;
 
-	                if (!ApplyWin32FullscreenWindowedFix_FullscreenWindowed())
-	                    SDL.SetWindowBordered(mSDLNativeWindow, false);
+					if (!ApplyWin32FullscreenWindowedFix_FullscreenWindowed())
+						SDL.SetWindowBordered(mSDLNativeWindow, false);
 
-	                SDL.SetWindowSize(mSDLNativeWindow, displayBounds.Width, displayBounds.Height);
-	                SDL.SetWindowPosition(mSDLNativeWindow, displayBounds.X, displayBounds.Y);
-	            }
-	            break;
+					SDL.SetWindowSize(mSDLNativeWindow, displayBounds.Width, displayBounds.Height);
+					SDL.SetWindowPosition(mSDLNativeWindow, displayBounds.X, displayBounds.Y);
+				}
+				break;
 
-	        default:
-	            Runtime.FatalError("Unsupported mode.");
-	    }
+			default:
+				Runtime.FatalError("Unsupported mode.");
+		}
 
-	    windowMode = mode;
-	    UpdateMouseGrab();*/
+		windowMode = mode;
+		UpdateMouseGrab();*/
 	}
 
 	/// <inheritdoc/>
 	public WindowMode GetWindowMode()
 	{
-	    //Contract.EnsureNotDisposed(this, Disposed);
+		//Contract.EnsureNotDisposed(this, Disposed);
 
-	    return windowMode;
+		return windowMode;
 	}
 
 	/// <inheritdoc/>
 	public void SetWindowState(WindowState state)
 	{
-	    switch (state)
-	    {
-	        case WindowState.Normal:
-	            SDL.RestoreWindow(mSDLNativeWindow);
-	            break;
+		switch (state)
+		{
+		case WindowState.Normal:
+			SDL.RestoreWindow(mSDLNativeWindow);
+			break;
 
-	        case WindowState.Minimized:
-	            SDL.MinimizeWindow(mSDLNativeWindow);
-	            break;
+		case WindowState.Minimized:
+			SDL.MinimizeWindow(mSDLNativeWindow);
+			break;
 
-	        case WindowState.Maximized:
-	            SDL.MaximizeWindow(mSDLNativeWindow);
-	            break;
+		case WindowState.Maximized:
+			SDL.MaximizeWindow(mSDLNativeWindow);
+			break;
 
-	        default:
-	            Runtime.FatalError("Unsupported state");
-	    }
+		default:
+			Runtime.FatalError("Unsupported state");
+		}
 	}
 
 	/// <inheritdoc/>
 	public WindowState GetWindowState()
 	{
-	    //Contract.EnsureNotDisposed(this, Disposed);
+		//Contract.EnsureNotDisposed(this, Disposed);
 
-	    SDL.WindowFlags flags = (.)SDL.GetWindowFlags(mSDLNativeWindow);
+		SDL.WindowFlags flags = (.)SDL.GetWindowFlags(mSDLNativeWindow);
 
-	    if ((flags & .Maximized) == .Maximized)
-	        return WindowState.Maximized;
+		if ((flags & .Maximized) == .Maximized)
+			return WindowState.Maximized;
 
-	    if ((flags & .Minimized) == .Minimized)
-	        return WindowState.Minimized;
+		if ((flags & .Minimized) == .Minimized)
+			return WindowState.Minimized;
 
-	    return WindowState.Normal;
+		return WindowState.Normal;
 	}
 }

@@ -50,4 +50,6 @@ interface IWindow
 	/// </summary>
 	/// <returns>The <see cref="WindowState"/> value that represents the window's maximization/minimization state.</returns>
 	WindowState GetWindowState();
+
+	NativePointerRegistry NativePointers {get;}
 }
