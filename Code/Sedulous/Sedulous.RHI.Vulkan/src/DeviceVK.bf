@@ -270,8 +270,11 @@ static
 	}
 }
 
-class DeviceVK : Device, IDevice, IDeviceVK
+class DeviceVK : IDevice, IDeviceVK
 {
+	private readonly DeviceLogger m_Logger;
+	private readonly DeviceAllocator<uint8> m_Allocator;
+
 	private Monitor m_Monitor = new .() ~ delete _;
 	private List<VkPhysicalDevice> m_PhysicalDevices;
 	private List<uint32> m_PhysicalDeviceIndices;
@@ -308,6 +311,9 @@ class DeviceVK : Device, IDevice, IDeviceVK
 	[Inline] public static implicit operator VkInstance(Self self)
 		{ return self.m_Instance; }
 
+	public DeviceLogger GetLogger() => m_Logger;
+	public DeviceAllocator<uint8> GetAllocator() => m_Allocator;
+
 	[Inline] public VkAllocationCallbacks* GetAllocationCallbacks()
 		{ return m_AllocationCallbackPtr; }
 
@@ -335,14 +341,14 @@ class DeviceVK : Device, IDevice, IDeviceVK
 	[Inline] public readonly ref List<uint32> GetConcurrentSharingModeQueueIndices()
 		{ return ref m_ConcurrentSharingModeQueueIndices; }
 
-	public this(DeviceLogger logger, DeviceAllocator<uint8> stdAllocator)
-		: base(logger, stdAllocator)
+	public this(DeviceLogger logger, DeviceAllocator<uint8> allocator)
 	{
-		m_PhysicalDevices = Allocate!<List<VkPhysicalDevice>>(GetAllocator());
-		m_PhysicalDeviceIndices = Allocate!<List<uint32>>(m_Allocator);
-		m_ConcurrentSharingModeQueueIndices = Allocate!<List<uint32>>(m_Allocator);
+		m_Logger = logger;
+		m_Allocator = allocator;
 
-		//VulkanNative.Initialize();
+		m_PhysicalDevices = Allocate!<List<VkPhysicalDevice>>(GetAllocator());
+		m_PhysicalDeviceIndices = Allocate!<List<uint32>>(GetAllocator());
+		m_ConcurrentSharingModeQueueIndices = Allocate!<List<uint32>>(GetAllocator());
 	}
 
 	public ~this()
@@ -370,10 +376,7 @@ class DeviceVK : Device, IDevice, IDeviceVK
 		Deallocate!(GetAllocator(), m_PhysicalDevices);
 	}
 
-	//================================================================================================================
-	// DeviceBase
-	//================================================================================================================
-	public override void Destroy()
+	public void Destroy()
 	{
 		Deallocate!(GetAllocator(), this);
 	}
@@ -1187,14 +1190,14 @@ class DeviceVK : Device, IDevice, IDeviceVK
 
 	public uint32 CalculateAllocationNumber(Sedulous.RHI.Helpers.ResourceGroupDesc resourceGroupDesc)
 	{
-		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
+		DeviceMemoryAllocatorHelper allocator = scope .(this, GetAllocator());
 
 		return allocator.CalculateAllocationNumber(resourceGroupDesc);
 	}
 
 	public Result AllocateAndBindMemory(Sedulous.RHI.Helpers.ResourceGroupDesc resourceGroupDesc, IMemory* allocations)
 	{
-		DeviceMemoryAllocatorHelper allocator = scope .(this, m_Allocator);
+		DeviceMemoryAllocatorHelper allocator = scope .(this, GetAllocator());
 
 		return allocator.AllocateAndBindMemory(resourceGroupDesc, allocations);
 	}
