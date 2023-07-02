@@ -1,5 +1,4 @@
 using System;
-using Sedulous.RHI.Implementation;
 namespace Sedulous.RHI;
 
 static

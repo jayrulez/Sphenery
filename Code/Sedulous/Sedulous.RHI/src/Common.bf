@@ -978,7 +978,7 @@ struct VertexAttributeD3D
 
 struct VertexAttributeVK
 {
-	uint32 location;
+	public uint32 location;
 }
 
 struct VertexAttributeDesc
