@@ -23,6 +23,8 @@ class SampleApplication : Application
 	private const uint32 BUFFERED_FRAME_MAX_NUM = 3;
 	private const uint32 SWAP_CHAIN_TEXTURE_NUM  = BUFFERED_FRAME_MAX_NUM;
 
+	private uint32 m_VsyncInterval = 0;
+
 	private IDevice mDevice;
 	private DeviceLogger mDeviceLogger;
 	private DeviceAllocator<uint8> mDeviceAllocator;
@@ -82,9 +84,9 @@ class SampleApplication : Application
 				};
 			swapChainDesc.commandQueue = mCommandQueue;
 			swapChainDesc.format = SwapChainFormat.BT709_G22_8BIT;
-			swapChainDesc.verticalSyncInterval = 1; //m_VsyncInterval;
-			swapChainDesc.width = (uint16)window.Width;
-			swapChainDesc.height = (uint16)window.Height;
+			swapChainDesc.verticalSyncInterval = m_VsyncInterval;
+			swapChainDesc.width = (uint16)window.ClientSize.Width;
+			swapChainDesc.height = (uint16)window.ClientSize.Height;
 			swapChainDesc.textureNum = SWAP_CHAIN_TEXTURE_NUM;
 			result = mDevice.CreateSwapChain(swapChainDesc, out mSwapChain);
 			if (result != .SUCCESS)
@@ -170,8 +172,8 @@ class SampleApplication : Application
 	{
 		var window = Host.Platform.WindowSystem.PrimaryWindow;
 
-		readonly uint32 windowWidth = (.)window.Width;
-		readonly uint32 windowHeight = (.)window.Height;
+		readonly uint32 windowWidth = (.)window.ClientSize.Width;
+		readonly uint32 windowHeight = (.)window.ClientSize.Height;
 		readonly uint32 bufferedFrameIndex = frameIndex % BUFFERED_FRAME_MAX_NUM;
 		/*readonly*/ ref Frame frame = ref m_Frames[bufferedFrameIndex];
 

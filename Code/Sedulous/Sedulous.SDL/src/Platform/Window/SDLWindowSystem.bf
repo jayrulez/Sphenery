@@ -30,7 +30,7 @@ class SDLWindowSystem : IWindowSystem
 
 	public Result<void> CreateWindow(StringView title, int32 width, int32 height, bool visible, out IWindow window)
 	{
-		var sdlWindow = new SDLWindow(title, width, height, visible);
+		var sdlWindow = new SDLWindow(this, title, width, height, visible);
 		mWindows.Add(sdlWindow);
 
 		window = sdlWindow;

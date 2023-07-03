@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Collections;
 using Bulkan;
-using Sedulous.RHI.Implementation;
 using System;
 using Sedulous.RHI.Helpers;
 using static Bulkan.VulkanNative;
@@ -958,12 +957,12 @@ class DeviceVK : IDevice, IDeviceVK
 
 	public Result GetDisplays(Display** displays, ref uint32 displayNum)
 	{
-		return default;
+		return Result.UNSUPPORTED;
 	}
 
 	public Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height)
 	{
-		return default;
+		return Result.UNSUPPORTED;
 	}
 
 	public Result AllocateMemory(uint32 physicalDeviceMask, uint32 memoryType, uint64 size, out IMemory memory)

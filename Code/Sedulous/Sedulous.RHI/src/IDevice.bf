@@ -1,5 +1,4 @@
 using Sedulous.RHI.Helpers;
-using Sedulous.RHI.Implementation;
 namespace Sedulous.RHI;
 
 interface IDevice

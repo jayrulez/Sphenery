@@ -9,9 +9,11 @@ namespace Sedulous.SDL.Platform;
 class SDLPlatform : IPlatform
 {
 	public Application Application => mApplication;
+	public IDisplayInfo Displays => mDisplayInfo;
 	public IWindowSystem WindowSystem => mWindowSystem;
 	public IInputSystem InputSystem => mInputSystem;
 
+	private readonly SDLDisplayInfo mDisplayInfo = new .() ~ delete _;
 	private readonly SDLWindowSystem mWindowSystem ~ delete _;
 	private readonly SDLInputSystem mInputSystem ~ delete _;
 	private readonly Application mApplication;
