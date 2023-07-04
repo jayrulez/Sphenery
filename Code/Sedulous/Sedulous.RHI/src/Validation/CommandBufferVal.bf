@@ -548,7 +548,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		if (!queryPoolVal.IsImported())
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), offset < queryPoolVal.GetQueryNum(), void(),
-				"Can't end query: the offset ('{}0') is out of range.", offset);
+				"Can't end query: the offset ('{0}') is out of range.", offset);
 
 			ref ValidationCommandUseQuery validationCommand = ref AllocateValidationCommand<ValidationCommandUseQuery>();
 			validationCommand.type = ValidationCommandType.END_QUERY;
