@@ -3,6 +3,7 @@ using Sedulous.RHI;
 using Sedulous.RHI.Vulkan;
 using System.Collections;
 using System;
+using Sedulous.RHI.Validation;
 namespace Samples02_RHI;
 
 struct Frame
@@ -43,6 +44,44 @@ class SampleApplication : Application
 	{
 	}
 
+	private static Result CreateDevice(DeviceCreationDesc desc, DeviceLogger logger, DeviceAllocator<uint8> allocator, out IDevice outDevice)
+	{
+		IDevice device = null;
+		Result result = CreateDeviceVK(logger, allocator, desc, out device);
+		if (result != .SUCCESS)
+		{
+			outDevice = ?;
+			return result;
+		}
+
+		if (desc.enableNRIValidation)
+		{
+			IDevice deviceVal = null;
+
+			result = CreateDeviceValidation(desc, logger, allocator, device, out deviceVal);
+			if (result != .SUCCESS)
+			{
+				outDevice = ?;
+				DestroyDeviceVK(device);
+				return result;
+			}
+
+			outDevice = deviceVal;
+
+			return .SUCCESS;
+		} else
+		{
+			outDevice = device;
+
+			return .SUCCESS;
+		}
+	}
+
+	private static void DestroyDevice(IDevice device)
+	{
+		device.Destroy();
+	}
+
 	protected override void OnInitialized()
 	{
 		Logger.LogInformation(nameof(OnInitialized));
@@ -50,11 +89,16 @@ class SampleApplication : Application
 
 		mDeviceLogger = new .(.VULKAN, default);
 		mDeviceAllocator = new .(MemoryAllocatorInterface());
-		DeviceCreationDesc desc = .();
+		DeviceCreationDesc desc = .(){
+			enableNRIValidation = true
+		};
 
-		CreateDeviceVK(mDeviceLogger, mDeviceAllocator, desc, out mDevice);
 
-		Result result = .SUCCESS;
+		Result result = CreateDevice(desc, mDeviceLogger, mDeviceAllocator, out mDevice);
+		if (result != .SUCCESS)
+		{
+			Runtime.FatalError(scope $"Device creation failed: {result}");
+		}
 
 		// Command queue
 		result = mDevice.GetCommandQueue(CommandQueueType.GRAPHICS, out mCommandQueue);
@@ -152,7 +196,7 @@ class SampleApplication : Application
 		mDevice.DestroyFence(mFrameFence);
 		mDevice.DestroySwapChain(mSwapChain);
 
-		DestroyDeviceVK(mDevice);
+		DestroyDevice(mDevice);
 		delete mDeviceAllocator;
 		delete mDeviceLogger;
 	}

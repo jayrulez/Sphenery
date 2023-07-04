@@ -955,7 +955,7 @@ class DeviceVK : IDevice, IDeviceVK
 		Deallocate!(GetAllocator(), (AccelerationStructureVK)accelerationStructure);
 	}
 
-	public Result GetDisplays(Display** displays, ref uint32 displayNum)
+	public Result GetDisplays(Display* displays, ref uint32 displayNum)
 	{
 		return Result.UNSUPPORTED;
 	}

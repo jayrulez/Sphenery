@@ -3,6 +3,8 @@ namespace Sedulous.RHI;
 
 interface IDevice
 {
+	void Destroy();
+
 	DeviceLogger GetLogger();
 
 	public DeviceAllocator<uint8> GetAllocator();
@@ -47,7 +49,7 @@ interface IDevice
 	void DestroySwapChain(ISwapChain swapChain);
 	void DestroyAccelerationStructure(IAccelerationStructure accelerationStructure);
 
-	Result GetDisplays(Display** displays, ref uint32 displayNum);
+	Result GetDisplays(Display* displays, ref uint32 displayNum);
 	Result GetDisplaySize(ref Display display, ref uint16 width, ref uint16 height);
 
 	Result AllocateMemory(uint32 physicalDeviceMask, MemoryType memoryType, uint64 size, out IMemory memory);
