@@ -4,6 +4,7 @@ using Sedulous.RHI.Vulkan;
 using System.Collections;
 using System;
 using Sedulous.RHI.Validation;
+using Sedulous.ShaderCompiler;
 namespace Samples02_RHI;
 
 struct Frame
@@ -21,6 +22,14 @@ struct BackBuffer
 
 class SampleApplication : Application
 {
+	private static SPIRVBindingOffsets SPIRV_BINDING_OFFSETS = .()
+		{
+			samplerOffset = 100,
+			textureOffset = 200,
+			constantBufferOffset = 300,
+			storageTextureAndBufferOffset = 400
+		};
+
 	private const uint32 BUFFERED_FRAME_MAX_NUM = 3;
 	private const uint32 SWAP_CHAIN_TEXTURE_NUM  = BUFFERED_FRAME_MAX_NUM;
 
@@ -85,13 +94,59 @@ class SampleApplication : Application
 	protected override void OnInitialized()
 	{
 		Logger.LogInformation(nameof(OnInitialized));
+
+		HLSLShaderCompiler shaderCompiler = scope .();
+
+		List<uint8> fragmentShaderByteCode = scope .();
+		{
+			Result<void> compileResult = shaderCompiler.CompileShader(.()
+				{
+					shaderPath = "shaders/Triangle.fs.hlsl",
+					shaderStage = .FRAGMENT,
+					shaderModel = "6_5",
+					entryPoint = "main",
+					outputType = .SPIRV,
+					sRegShift = SPIRV_BINDING_OFFSETS.samplerOffset,
+					tRegShift = SPIRV_BINDING_OFFSETS.textureOffset,
+					bRegShift = SPIRV_BINDING_OFFSETS.constantBufferOffset,
+					uRegShift = SPIRV_BINDING_OFFSETS.storageTextureAndBufferOffset
+				}, fragmentShaderByteCode);
+
+			if (compileResult case .Err)
+			{
+				Runtime.FatalError("Fragment shader compilation failed.");
+			}
+		}
+		List<uint8> vertexShaderByteCode = scope .();
+		{
+			Result<void> compileResult = shaderCompiler.CompileShader(.()
+				{
+					shaderPath = "shaders/Triangle.vs.hlsl",
+					shaderStage = .VERTEX,
+					shaderModel = "6_5",
+					entryPoint = "main",
+					outputType = .SPIRV,
+					sRegShift = SPIRV_BINDING_OFFSETS.samplerOffset,
+					tRegShift = SPIRV_BINDING_OFFSETS.textureOffset,
+					bRegShift = SPIRV_BINDING_OFFSETS.constantBufferOffset,
+					uRegShift = SPIRV_BINDING_OFFSETS.storageTextureAndBufferOffset
+				}, vertexShaderByteCode);
+
+			if (compileResult case .Err)
+			{
+				Runtime.FatalError("Fragment shader compilation failed.");
+			}
+		}
+
 		var window = Host.Platform.WindowSystem.PrimaryWindow;
 
 		mDeviceLogger = new .(.VULKAN, default);
 		mDeviceAllocator = new .(MemoryAllocatorInterface());
-		DeviceCreationDesc desc = .(){
-			enableNRIValidation = true
-		};
+		DeviceCreationDesc desc = .()
+			{
+				enableNRIValidation = true,
+				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
+			};
 
 
 		Result result = CreateDevice(desc, mDeviceLogger, mDeviceAllocator, out mDevice);
