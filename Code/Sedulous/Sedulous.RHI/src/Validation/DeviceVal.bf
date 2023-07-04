@@ -209,11 +209,11 @@ class DeviceVal : IDevice
 		readonly ref BufferDesc bufferDesc = ref ((BufferVal)bufferViewDesc.buffer).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), bufferViewDesc.offset < bufferDesc.size, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'bufferViewDesc.offset' is invalid. (bufferViewDesc.offset=%llu, bufferDesc.size=%llu)",
+			"Can't create Descriptor: 'bufferViewDesc.offset' is invalid. (bufferViewDesc.offset={0}, bufferDesc.size={1})",
 			bufferViewDesc.offset, bufferDesc.size);
 
 		RETURN_ON_FAILURE!(GetLogger(), bufferViewDesc.offset + bufferViewDesc.size <= bufferDesc.size, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'bufferViewDesc.size' is invalid. (bufferViewDesc.offset=%llu, bufferViewDesc.size=%llu, bufferDesc.size=%llu)",
+			"Can't create Descriptor: 'bufferViewDesc.size' is invalid. (bufferViewDesc.offset={0}, bufferViewDesc.size={1}, bufferDesc.size={2})",
 			bufferViewDesc.offset, bufferViewDesc.size, bufferDesc.size);
 
 		var bufferViewDescImpl = bufferViewDesc;
@@ -246,19 +246,19 @@ class DeviceVal : IDevice
 		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset=%hu, textureDesc.mipNum=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={0}, textureDesc.mipNum={1})",
 			textureViewDesc.mipOffset, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset + textureViewDesc.mipNum <= textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset=%hu, textureViewDesc.mipNum=%hu, textureDesc.mipNum=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset={0}, textureViewDesc.mipNum={1}, textureDesc.mipNum={2})",
 			textureViewDesc.mipOffset, textureViewDesc.mipNum, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.arrayOffset < textureDesc.arraySize, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.arrayOffset=%hu, textureDesc.arraySize=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.arrayOffset={0}, textureDesc.arraySize={1})",
 			textureViewDesc.arrayOffset, textureDesc.arraySize);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.arrayOffset + textureViewDesc.arraySize <= textureDesc.arraySize, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.arrayOffset=%hu, textureViewDesc.arraySize=%hu, textureDesc.arraySize=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.arrayOffset={0}, textureViewDesc.arraySize={1}, textureDesc.arraySize={2})",
 			textureViewDesc.arrayOffset, textureViewDesc.arraySize, textureDesc.arraySize);
 
 		var textureViewDescImpl = textureViewDesc;
@@ -291,19 +291,19 @@ class DeviceVal : IDevice
 		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset=%hu, textureDesc.mipNum=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={0}, textureDesc.mipNum={1})",
 			textureViewDesc.mipOffset, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset + textureViewDesc.mipNum <= textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset=%hu, textureViewDesc.mipNum=%hu, textureDesc.mipNum=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset={0}, textureViewDesc.mipNum={1}, textureDesc.mipNum={2})",
 			textureViewDesc.mipOffset, textureViewDesc.mipNum, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.arrayOffset < textureDesc.arraySize, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.arrayOffset=%hu, textureDesc.arraySize=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.arrayOffset={0}, textureDesc.arraySize={1})",
 			textureViewDesc.arrayOffset, textureDesc.arraySize);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.arrayOffset + textureViewDesc.arraySize <= textureDesc.arraySize, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.arrayOffset=%hu, textureViewDesc.arraySize=%hu, textureDesc.arraySize=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.arrayOffset={0}, textureViewDesc.arraySize={1}, textureDesc.arraySize={2})",
 			textureViewDesc.arrayOffset, textureViewDesc.arraySize, textureDesc.arraySize);
 
 		var textureViewDescImpl = textureViewDesc;
@@ -336,19 +336,19 @@ class DeviceVal : IDevice
 		readonly ref TextureDesc textureDesc = ref ((TextureVal)textureViewDesc.texture).GetDesc();
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset < textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset=%hu, textureViewDesc.mipOffset=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipOffset' is invalid. (textureViewDesc.mipOffset={0}, textureViewDesc.mipOffset={1})",
 			textureViewDesc.mipOffset, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.mipOffset + textureViewDesc.mipNum <= textureDesc.mipNum, Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset=%hu, textureViewDesc.mipNum=%hu, textureDesc.mipNum=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.mipNum' is invalid. (textureViewDesc.mipOffset={0}, textureViewDesc.mipNum={1}, textureDesc.mipNum={2})",
 			textureViewDesc.mipOffset, textureViewDesc.mipNum, textureDesc.mipNum);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.sliceOffset < textureDesc.size[2], Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.sliceOffset=%hu, textureDesc.size[2]=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arrayOffset' is invalid. (textureViewDesc.sliceOffset={0}, textureDesc.size[2]={1})",
 			textureViewDesc.sliceOffset, textureDesc.size[2]);
 
 		RETURN_ON_FAILURE!(GetLogger(), textureViewDesc.sliceOffset + textureViewDesc.sliceNum <= textureDesc.size[2], Result.INVALID_ARGUMENT,
-			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.sliceOffset=%hu, textureViewDesc.sliceNum=%hu, textureDesc.size[2]=%hu)",
+			"Can't create Descriptor: 'textureViewDesc.arraySize' is invalid. (textureViewDesc.sliceOffset={0}, textureViewDesc.sliceNum={1}, textureDesc.size[2]={2})",
 			textureViewDesc.sliceOffset, textureViewDesc.sliceNum, textureDesc.size[2]);
 
 		var textureViewDescImpl = textureViewDesc;
@@ -430,19 +430,19 @@ class DeviceVal : IDevice
 				readonly ref DescriptorRangeDesc range = ref descriptorSetDesc.ranges[j];
 
 				RETURN_ON_FAILURE!(GetLogger(), !range.isDescriptorNumVariable || range.isArray, Result.INVALID_ARGUMENT,
-					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[%u].ranges[%u]' is invalid, 'isArray' can't be false if 'isDescriptorNumVariable' is true.",
+					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[{0}].ranges[{1}]' is invalid, 'isArray' can't be false if 'isDescriptorNumVariable' is true.",
 					i, j);
 
 				RETURN_ON_FAILURE!(GetLogger(), range.descriptorNum > 0, Result.INVALID_ARGUMENT,
-					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[%u].ranges[%u].descriptorNum' can't be 0.",
+					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[{0}].ranges[{1}].descriptorNum' can't be 0.",
 					i, j);
 
 				RETURN_ON_FAILURE!(GetLogger(), range.visibility < ShaderStage.MAX_NUM, Result.INVALID_ARGUMENT,
-					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[%u].ranges[%u].visibility' is invalid.",
+					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[{0}].ranges[{1}].visibility' is invalid.",
 					i, j);
 
 				RETURN_ON_FAILURE!(GetLogger(), range.descriptorType < DescriptorType.MAX_NUM, Result.INVALID_ARGUMENT,
-					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[%u].ranges[%u].descriptorType' is invalid.",
+					"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[{0}].ranges[{1}].descriptorType' is invalid.",
 					i, j);
 
 				if (range.visibility != ShaderStage.ALL)
@@ -451,7 +451,7 @@ class DeviceVal : IDevice
 					readonly uint32 filteredVisibilityMask = (.)(visibilityMask & pipelineLayoutDesc.stageMask);
 
 					RETURN_ON_FAILURE!(GetLogger(), (uint32)visibilityMask == filteredVisibilityMask, Result.INVALID_ARGUMENT,
-						"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[%u].ranges[%u].visibility' is not compatible with 'pipelineLayoutDesc.stageMask'.", i, j);
+						"Can't create pipeline layout: 'pipelineLayoutDesc.descriptorSets[{0}].ranges[{1}].visibility' is not compatible with 'pipelineLayoutDesc.stageMask'.", i, j);
 				}
 			}
 		}
@@ -495,13 +495,13 @@ class DeviceVal : IDevice
 				vertexShader = shaderDesc;
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.bytecode != null, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[%u].bytecode' is invalid.", i);
+				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[{0}].bytecode' is invalid.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.size != 0, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[%u].size' is 0.", i);
+				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[{0}].size' is 0.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.stage > ShaderStage.ALL && shaderDesc.stage < ShaderStage.COMPUTE, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[%u].stage' is invalid.", i);
+				"Can't create Pipeline: 'graphicsPipelineDesc.shaderStages[{0}].stage' is invalid.", i);
 		}
 
 		if (graphicsPipelineDesc.inputAssembly != null)
@@ -584,13 +584,13 @@ class DeviceVal : IDevice
 			readonly ref ShaderDesc shaderDesc = ref pipelineDesc.shaderLibrary.shaderDescs[i];
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.bytecode != null, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[%u].bytecode' is invalid.", i);
+				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[{0}].bytecode' is invalid.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.size != 0, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[%u].size' is 0.", i);
+				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[{0}].size' is 0.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), shaderDesc.stage > ShaderStage.COMPUTE && shaderDesc.stage < ShaderStage.MAX_NUM, Result.INVALID_ARGUMENT,
-				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[%u].stage' is invalid.", i);
+				"Can't create Pipeline: 'pipelineDesc.shaderLibrary.shaderDescs[{0}].stage' is invalid.", i);
 		}
 
 		var pipelineDescImpl = pipelineDesc;
@@ -621,7 +621,7 @@ class DeviceVal : IDevice
 				DescriptorVal descriptorVal = (DescriptorVal)frameBufferDesc.colorAttachments[i];
 
 				RETURN_ON_FAILURE!(GetLogger(), descriptorVal.IsColorAttachment(), Result.INVALID_ARGUMENT,
-					"Can't create FrameBuffer: 'frameBufferDesc.colorAttachments[%u]' is not a color attachment descriptor.", i);
+					"Can't create FrameBuffer: 'frameBufferDesc.colorAttachments[{0}]' is not a color attachment descriptor.", i);
 			}
 		}
 
@@ -902,15 +902,15 @@ class DeviceVal : IDevice
 			readonly ref BufferMemoryBindingDesc srcDesc = ref memoryBindingDescs[i];
 
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.buffer != null, Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].buffer' is invalid.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].buffer' is invalid.", i);
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.memory != null, Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].memory' is invalid.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].memory' is invalid.", i);
 
 			MemoryVal memory = (MemoryVal)srcDesc.memory;
 			BufferVal buffer = (BufferVal)srcDesc.buffer;
 
 			RETURN_ON_FAILURE!(GetLogger(), !buffer.IsBoundToMemory(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].buffer' is already bound to memory.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].buffer' is already bound to memory.", i);
 
 			// Skip validation if memory has been created from GAPI object using a wrapper extension
 			if (memory.GetMemoryLocation() == MemoryLocation.MAX_NUM)
@@ -920,19 +920,19 @@ class DeviceVal : IDevice
 			buffer.GetMemoryInfo(memory.GetMemoryLocation(), ref memoryDesc);
 
 			RETURN_ON_FAILURE!(GetLogger(), !memoryDesc.mustBeDedicated || srcDesc.offset == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].offset' must be zero for dedicated allocation.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].offset' must be zero for dedicated allocation.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), memoryDesc.alignment != 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].alignment' can't be zero.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].alignment' can't be zero.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.offset % memoryDesc.alignment == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].offset' is misaligned.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].offset' is misaligned.", i);
 
 			readonly uint64 rangeMax = srcDesc.offset + memoryDesc.size;
 			readonly bool memorySizeIsUnknown = memory.GetSize() == 0;
 
 			RETURN_ON_FAILURE!(GetLogger(), memorySizeIsUnknown || rangeMax <= memory.GetSize(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to buffers: 'memoryBindingDescs[%u].offset' is invalid.", i);
+				"Can't bind memory to buffers: 'memoryBindingDescs[{0}].offset' is invalid.", i);
 
 			destDesc = srcDesc;
 			destDesc.memory = memory.GetImpl();
@@ -966,15 +966,15 @@ class DeviceVal : IDevice
 			readonly ref TextureMemoryBindingDesc srcDesc = ref memoryBindingDescs[i];
 
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.texture != null, Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].texture' is invalid.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].texture' is invalid.", i);
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.memory != null, Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].memory' is invalid.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].memory' is invalid.", i);
 
 			MemoryVal memory = (MemoryVal)srcDesc.memory;
 			TextureVal texture = (TextureVal)srcDesc.texture;
 
 			RETURN_ON_FAILURE!(GetLogger(), !texture.IsBoundToMemory(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].texture' is already bound to memory.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].texture' is already bound to memory.", i);
 
 			// Skip validation if memory has been created from GAPI object using a wrapper extension
 			if (memory.GetMemoryLocation() == MemoryLocation.MAX_NUM)
@@ -984,19 +984,19 @@ class DeviceVal : IDevice
 			texture.GetMemoryInfo(memory.GetMemoryLocation(), ref memoryDesc);
 
 			RETURN_ON_FAILURE!(GetLogger(), !memoryDesc.mustBeDedicated || srcDesc.offset == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].offset' must be zero for dedicated allocation.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].offset' must be zero for dedicated allocation.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), memoryDesc.alignment != 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].alignment' can't be zero.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].alignment' can't be zero.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.offset % memoryDesc.alignment == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].offset' is misaligned.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].offset' is misaligned.", i);
 
 			readonly uint64 rangeMax = srcDesc.offset + memoryDesc.size;
 			readonly bool memorySizeIsUnknown = memory.GetSize() == 0;
 
 			RETURN_ON_FAILURE!(GetLogger(), memorySizeIsUnknown || rangeMax <= memory.GetSize(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to textures: 'memoryBindingDescs[%u].offset' is invalid.", i);
+				"Can't bind memory to textures: 'memoryBindingDescs[{0}].offset' is invalid.", i);
 
 			destDesc = srcDesc;
 			destDesc.memory = memory.GetImpl();
@@ -1035,25 +1035,25 @@ class DeviceVal : IDevice
 			AccelerationStructureVal accelerationStructure = (AccelerationStructureVal)srcDesc.accelerationStructure;
 
 			RETURN_ON_FAILURE!(GetLogger(), !accelerationStructure.IsBoundToMemory(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to acceleration structures: 'memoryBindingDescs[%u].accelerationStructure' is already bound to memory.", i);
+				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{0}].accelerationStructure' is already bound to memory.", i);
 
 			MemoryDesc memoryDesc = .();
 			accelerationStructure.GetMemoryInfo(ref memoryDesc);
 
 			RETURN_ON_FAILURE!(GetLogger(), !memoryDesc.mustBeDedicated || srcDesc.offset == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to acceleration structures: 'memoryBindingDescs[%u].offset' must be zero for dedicated allocation.", i);
+				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{0}].offset' must be zero for dedicated allocation.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), memoryDesc.alignment != 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to acceleration structures: 'memoryBindingDescs[%u].alignment' can't be zero.", i);
+				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{0}].alignment' can't be zero.", i);
 
 			RETURN_ON_FAILURE!(GetLogger(), srcDesc.offset % memoryDesc.alignment == 0, Result.INVALID_ARGUMENT,
-				"Can't bind memory to acceleration structures: 'memoryBindingDescs[%u].offset' is misaligned.", i);
+				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{0}].offset' is misaligned.", i);
 
 			readonly uint64 rangeMax = srcDesc.offset + memoryDesc.size;
 			readonly bool memorySizeIsUnknown = memory.GetSize() == 0;
 
 			RETURN_ON_FAILURE!(GetLogger(), memorySizeIsUnknown || rangeMax <= memory.GetSize(), Result.INVALID_ARGUMENT,
-				"Can't bind memory to acceleration structures: 'memoryBindingDescs[%u].offset' is invalid.", i);
+				"Can't bind memory to acceleration structures: 'memoryBindingDescs[{0}].offset' is invalid.", i);
 
 			destDesc = srcDesc;
 			destDesc.memory = memory.GetImpl();
@@ -1124,7 +1124,7 @@ class DeviceVal : IDevice
 		for (uint32 i = 0; i < resourceGroupDesc.bufferNum; i++)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.buffers[i] != null, 0,
-				"Can't calculate the number of allocations: 'resourceGroupDesc.buffers[%u]' is invalid.", i);
+				"Can't calculate the number of allocations: 'resourceGroupDesc.buffers[{0}]' is invalid.", i);
 
 			BufferVal bufferVal = (BufferVal)resourceGroupDesc.buffers[i];
 			buffersImpl[i] = (bufferVal.GetImpl());
@@ -1135,7 +1135,7 @@ class DeviceVal : IDevice
 		for (uint32 i = 0; i < resourceGroupDesc.textureNum; i++)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.textures[i] != null, 0,
-				"Can't calculate the number of allocations: 'resourceGroupDesc.textures[%u]' is invalid.", i);
+				"Can't calculate the number of allocations: 'resourceGroupDesc.textures[{0}]' is invalid.", i);
 
 			TextureVal textureVal = (TextureVal)resourceGroupDesc.textures[i];
 			texturesImpl[i] = (textureVal.GetImpl());
@@ -1167,7 +1167,7 @@ class DeviceVal : IDevice
 		for (uint32 i = 0; i < resourceGroupDesc.bufferNum; i++)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.buffers[i] != null, Result.INVALID_ARGUMENT,
-				"Can't allocate and bind memory: 'resourceGroupDesc.buffers[%u]' is invalid.", i);
+				"Can't allocate and bind memory: 'resourceGroupDesc.buffers[{0}]' is invalid.", i);
 
 			BufferVal bufferVal = (BufferVal)resourceGroupDesc.buffers[i];
 			buffersImpl[i] = (bufferVal.GetImpl());
@@ -1178,7 +1178,7 @@ class DeviceVal : IDevice
 		for (uint32 i = 0; i < resourceGroupDesc.textureNum; i++)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), resourceGroupDesc.textures[i] != null, Result.INVALID_ARGUMENT,
-				"Can't allocate and bind memory: 'resourceGroupDesc.textures[%u]' is invalid.", i);
+				"Can't allocate and bind memory: 'resourceGroupDesc.textures[{0}]' is invalid.", i);
 
 			TextureVal textureVal = (TextureVal)resourceGroupDesc.textures[i];
 			texturesImpl[i] = (textureVal.GetImpl());

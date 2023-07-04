@@ -6,20 +6,20 @@ static{
 	public static bool ValidateTransitionBarrierDesc(DeviceVal device, uint32 i, BufferTransitionBarrierDesc bufferTransitionBarrierDesc)
 {
     RETURN_ON_FAILURE!(device.GetLogger(), bufferTransitionBarrierDesc.buffer != null, false,
-        "Can't change resource state: 'transitionBarriers.buffers[%u].buffer' is invalid.", i);
+        "Can't change resource state: 'transitionBarriers.buffers[{0}].buffer' is invalid.", i);
 
     readonly BufferVal bufferVal = (BufferVal)bufferTransitionBarrierDesc.buffer;
 
     RETURN_ON_FAILURE!(device.GetLogger(), bufferVal.IsBoundToMemory(), false,
-        "Can't change resource state: 'transitionBarriers.buffers[%u].buffer' is not bound to memory.", i);
+        "Can't change resource state: 'transitionBarriers.buffers[{0}].buffer' is not bound to memory.", i);
 
     readonly BufferUsageBits usageMask = bufferVal.GetDesc().usageMask;
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(usageMask, bufferTransitionBarrierDesc.prevAccess), false,
-        "Can't change resource state: 'transitionBarriers.buffers[%u].prevAccess' is not supported by usageMask of the buffer.", i);
+        "Can't change resource state: 'transitionBarriers.buffers[{0}].prevAccess' is not supported by usageMask of the buffer.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(usageMask, bufferTransitionBarrierDesc.nextAccess), false,
-        "Can't change resource state: 'transitionBarriers.buffers[%u].nextAccess' is not supported by usageMask of the buffer.", i);
+        "Can't change resource state: 'transitionBarriers.buffers[{0}].nextAccess' is not supported by usageMask of the buffer.", i);
 
     return true;
 }
@@ -27,26 +27,26 @@ static{
 	public static bool ValidateTransitionBarrierDesc(DeviceVal device, uint32 i, TextureTransitionBarrierDesc textureTransitionBarrierDesc)
 {
     RETURN_ON_FAILURE!(device.GetLogger(), textureTransitionBarrierDesc.texture != null, false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].texture' is invalid.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].texture' is invalid.", i);
 
     readonly TextureVal textureVal = (TextureVal)textureTransitionBarrierDesc.texture;
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureVal.IsBoundToMemory(), false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].texture' is not bound to memory.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].texture' is not bound to memory.", i);
 
     readonly TextureUsageBits usageMask = textureVal.GetDesc().usageMask;
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(usageMask, textureTransitionBarrierDesc.prevAccess), false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].prevAccess' is not supported by usageMask of the texture.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].prevAccess' is not supported by usageMask of the texture.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(usageMask, textureTransitionBarrierDesc.nextAccess), false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].nextAccess' is not supported by usageMask of the texture.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].nextAccess' is not supported by usageMask of the texture.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsTextureLayoutSupported(usageMask, textureTransitionBarrierDesc.prevLayout), false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].prevLayout' is not supported by usageMask of the texture.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].prevLayout' is not supported by usageMask of the texture.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), IsTextureLayoutSupported(usageMask, textureTransitionBarrierDesc.nextLayout), false,
-        "Can't change resource state: 'transitionBarriers.textures[%u].nextLayout' is not supported by usageMask of the texture.", i);
+        "Can't change resource state: 'transitionBarriers.textures[{0}].nextLayout' is not supported by usageMask of the texture.", i);
 
     return true;
 }
@@ -56,11 +56,11 @@ static{
     readonly uint32 subresourceNum = textureUploadDesc.arraySize * textureUploadDesc.mipNum;
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureUploadDesc.texture != null, false,
-        "Can't upload data: 'textureUploadDescs[%u].texture' is invalid.", i);
+        "Can't upload data: 'textureUploadDescs[{0}].texture' is invalid.", i);
 
     if (subresourceNum == 0 && textureUploadDesc.subresources != null)
     {
-        REPORT_WARNING(device.GetLogger(), "No data to upload: the number of subresources in 'textureUploadDescs[%u]' is 0.", i);
+        REPORT_WARNING(device.GetLogger(), "No data to upload: the number of subresources in 'textureUploadDescs[{0}]' is 0.", i);
         return true;
     }
 
@@ -70,16 +70,16 @@ static{
     readonly TextureVal textureVal = (TextureVal)textureUploadDesc.texture;
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureUploadDesc.mipNum <= textureVal.GetDesc().mipNum, false,
-        "Can't upload data: 'textureUploadDescs[%u].mipNum' is invalid.", i);
+        "Can't upload data: 'textureUploadDescs[{0}].mipNum' is invalid.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureUploadDesc.arraySize <= textureVal.GetDesc().arraySize, false,
-        "Can't upload data: 'textureUploadDescs[%u].arraySize' is invalid.", i);
+        "Can't upload data: 'textureUploadDescs[{0}].arraySize' is invalid.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureUploadDesc.nextLayout < TextureLayout.MAX_NUM, false,
-        "Can't upload data: 'textureUploadDescs[%u].nextLayout' is invalid.", i);
+        "Can't upload data: 'textureUploadDescs[{0}].nextLayout' is invalid.", i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), textureVal.IsBoundToMemory(), false,
-        "Can't upload data: 'textureUploadDescs[%u].texture' is not bound to memory.", i);
+        "Can't upload data: 'textureUploadDescs[{0}].texture' is not bound to memory.", i);
 
     for (uint32 j = 0; j < subresourceNum; j++)
     {
@@ -87,18 +87,18 @@ static{
 
         if (subresource.sliceNum == 0)
         {
-            REPORT_WARNING(device.GetLogger(), "No data to upload: the number of subresources in 'textureUploadDescs[%u].subresources[%u].sliceNum' is 0.", i, j);
+            REPORT_WARNING(device.GetLogger(), "No data to upload: the number of subresources in 'textureUploadDescs[{0}].subresources[{1}].sliceNum' is 0.", i, j);
             continue;
         }
 
         RETURN_ON_FAILURE!(device.GetLogger(), subresource.slices != null, false,
-            "Can't upload data: 'textureUploadDescs[%u].subresources[%u].slices' is invalid.", i, j);
+            "Can't upload data: 'textureUploadDescs[{0}].subresources[{1}].slices' is invalid.", i, j);
 
         RETURN_ON_FAILURE!(device.GetLogger(), subresource.rowPitch != 0, false,
-            "Can't upload data: 'textureUploadDescs[%u].subresources[%u].rowPitch' is 0.", i, j);
+            "Can't upload data: 'textureUploadDescs[{0}].subresources[{1}].rowPitch' is 0.", i, j);
 
         RETURN_ON_FAILURE!(device.GetLogger(), subresource.slicePitch != 0, false,
-            "Can't upload data: 'textureUploadDescs[%u].subresources[%u].slicePitch' is 0.", i, j);
+            "Can't upload data: 'textureUploadDescs[{0}].subresources[{1}].slicePitch' is 0.", i, j);
     }
 
     return true;
@@ -107,26 +107,26 @@ static{
 	public static bool ValidateBufferUploadDesc(DeviceVal device, uint32 i, BufferUploadDesc bufferUploadDesc)
 {
     RETURN_ON_FAILURE!(device.GetLogger(), bufferUploadDesc.buffer != null, false,
-        "Can't upload data: 'bufferUploadDescs[%u].buffer' is invalid.", i);
+        "Can't upload data: 'bufferUploadDescs[{0}].buffer' is invalid.", i);
 
     if (bufferUploadDesc.dataSize == 0)
     {
-        REPORT_WARNING(device.GetLogger(), "No data to upload: 'bufferUploadDescs[%u].dataSize' is 0.", i);
+        REPORT_WARNING(device.GetLogger(), "No data to upload: 'bufferUploadDescs[{0}].dataSize' is 0.", i);
         return true;
     }
 
     RETURN_ON_FAILURE!(device.GetLogger(), bufferUploadDesc.data != null, false,
-        "Can't upload data: 'bufferUploadDescs[%u].data' is invalid.", i);
+        "Can't upload data: 'bufferUploadDescs[{0}].data' is invalid.", i);
 
     readonly BufferVal bufferVal = (BufferVal)bufferUploadDesc.buffer;
 
     readonly uint64 rangeEnd = bufferUploadDesc.bufferOffset + bufferUploadDesc.dataSize;
 
     RETURN_ON_FAILURE!(device.GetLogger(), rangeEnd <= bufferVal.GetDesc().size, false,
-        "Can't upload data: 'bufferUploadDescs[%u].bufferOffset + bufferUploadDescs[%u].dataSize' is out of bounds.", i, i);
+        "Can't upload data: 'bufferUploadDescs[{0}].bufferOffset + bufferUploadDescs[{1}].dataSize' is out of bounds.", i, i);
 
     RETURN_ON_FAILURE!(device.GetLogger(), bufferVal.IsBoundToMemory(), false,
-        "Can't upload data: 'bufferUploadDescs[%u].buffer' is not bound to memory.", i);
+        "Can't upload data: 'bufferUploadDescs[{0}].buffer' is not bound to memory.", i);
 
     return true;
 }
@@ -276,7 +276,7 @@ class CommandQueueVal : DeviceObjectVal<ICommandQueue>, ICommandQueue
 
             if (type == ValidationCommandType.NONE || type >= ValidationCommandType.MAX_NUM)
             {
-                REPORT_ERROR(m_Device.GetLogger(), "Invalid validation command: %u", (uint32)type);
+                REPORT_ERROR(m_Device.GetLogger(), "Invalid validation command: {0}", (uint32)type);
                 break;
             }
 
@@ -297,7 +297,7 @@ class CommandQueueVal : DeviceObjectVal<ICommandQueue>, ICommandQueue
 
     if (used)
     {
-        REPORT_ERROR(m_Device.GetLogger(), "Can't begin query: it must be reset before use. (QueryPool='%s', offset=%u)",
+        REPORT_ERROR(m_Device.GetLogger(), "Can't begin query: it must be reset before use. (QueryPool='{0}', offset={1})",
             queryPool.GetDebugName().CStr(), command.queryPoolOffset);
     }
 }
@@ -315,7 +315,7 @@ class CommandQueueVal : DeviceObjectVal<ICommandQueue>, ICommandQueue
     {
         if (used)
         {
-            REPORT_ERROR(m_Device.GetLogger(), "Can't end query: it must be reset before use. (QueryPool='%s', offset=%u)",
+            REPORT_ERROR(m_Device.GetLogger(), "Can't end query: it must be reset before use. (QueryPool='{0}', offset={1})",
                 queryPool.GetDebugName().CStr(), command.queryPoolOffset);
         }
     }
@@ -323,7 +323,7 @@ class CommandQueueVal : DeviceObjectVal<ICommandQueue>, ICommandQueue
     {
         if (!used)
         {
-            REPORT_ERROR(m_Device.GetLogger(), "Can't end query: it's not in active state. (QueryPool='%s', offset=%u)",
+            REPORT_ERROR(m_Device.GetLogger(), "Can't end query: it's not in active state. (QueryPool='{0}', offset={1})",
                 queryPool.GetDebugName().CStr(), command.queryPoolOffset);
         }
     }

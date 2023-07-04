@@ -47,7 +47,7 @@ class DescriptorVal : DeviceObjectVal<IDescriptor>, IDescriptor
 			     m_ResourceViewType = ResourceViewType.SHADER_RESOURCE_STORAGE;
 			     break;
 			 default:
-			     CHECK(m_Device.GetLogger(), false, "unexpected BufferView type in DescriptorVal: %u", (uint32)bufferViewDesc.viewType);
+			     CHECK(m_Device.GetLogger(), false, "unexpected BufferView type in DescriptorVal: {0}", (uint32)bufferViewDesc.viewType);
 			     break;
 			}
 		}
@@ -73,7 +73,7 @@ class DescriptorVal : DeviceObjectVal<IDescriptor>, IDescriptor
 			     m_ResourceViewType = ResourceViewType.DEPTH_STENCIL_ATTACHMENT;
 			     break;
 			 default:
-			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: %u", (uint32)textureViewDesc.viewType);
+			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: {0}", (uint32)textureViewDesc.viewType);
 			     break;
 			}
 		}
@@ -101,7 +101,7 @@ class DescriptorVal : DeviceObjectVal<IDescriptor>, IDescriptor
 			     m_ResourceViewType = ResourceViewType.DEPTH_STENCIL_ATTACHMENT;
 			     break;
 			 default:
-			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: %u", (uint32)textureViewDesc.viewType);
+			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: {0}", (uint32)textureViewDesc.viewType);
 			     break;
 			}
 		}
@@ -122,7 +122,7 @@ class DescriptorVal : DeviceObjectVal<IDescriptor>, IDescriptor
 			     m_ResourceViewType = ResourceViewType.COLOR_ATTACHMENT;
 			     break;
 			 default:
-			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: %u", (uint32)textureViewDesc.viewType);
+			     CHECK(m_Device.GetLogger(), false, "unexpected TextureView type in DescriptorVal: {0}", (uint32)textureViewDesc.viewType);
 			     break;
 			}
 		}

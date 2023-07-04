@@ -525,7 +525,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		if (!queryPoolVal.IsImported())
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), offset < queryPoolVal.GetQueryNum(), void(),
-				"Can't begin query: the offset ('%u') is out of range.", offset);
+				"Can't begin query: the offset ('{0}') is out of range.", offset);
 
 			ref ValidationCommandUseQuery validationCommand = ref AllocateValidationCommand<ValidationCommandUseQuery>();
 			validationCommand.type = ValidationCommandType.BEGIN_QUERY;
@@ -548,7 +548,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		if (!queryPoolVal.IsImported())
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), offset < queryPoolVal.GetQueryNum(), void(),
-				"Can't end query: the offset ('%u') is out of range.", offset);
+				"Can't end query: the offset ('{}0') is out of range.", offset);
 
 			ref ValidationCommandUseQuery validationCommand = ref AllocateValidationCommand<ValidationCommandUseQuery>();
 			validationCommand.type = ValidationCommandType.END_QUERY;
@@ -574,7 +574,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		if (!queryPoolVal.IsImported())
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), offset + num <= queryPoolVal.GetQueryNum(), void(),
-				"Can't copy queries: offset + num ('%u') is out of range.", offset + num);
+				"Can't copy queries: offset + num ('{0}') is out of range.", offset + num);
 		}
 
 		IQueryPool queryPoolImpl = NRI_GET_IMPL_REF!<IQueryPool...>((QueryPoolVal)queryPool);
@@ -596,7 +596,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		if (!queryPoolVal.IsImported())
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), offset + num <= queryPoolVal.GetQueryNum(), void(),
-				"Can't reset queries: offset + num ('%u') is out of range.", offset + num);
+				"Can't reset queries: offset + num ('{0}') is out of range.", offset + num);
 
 			ref ValidationCommandResetQuery validationCommand = ref AllocateValidationCommand<ValidationCommandResetQuery>();
 			validationCommand.type = ValidationCommandType.RESET_QUERY;
@@ -775,7 +775,7 @@ class CommandBufferVal : DeviceObjectVal<ICommandBuffer>, ICommandBuffer
 		for (uint32 i = 0; i < accelerationStructureNum; i++)
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), accelerationStructures[i] != null, void(),
-				"Can't write AS size: 'accelerationStructures[%u]' is invalid.", i);
+				"Can't write AS size: 'accelerationStructures[{0}]' is invalid.", i);
 
 			accelerationStructureArray[i] = NRI_GET_IMPL_PTR!<IAccelerationStructure...>((AccelerationStructureVal)accelerationStructures[i]);
 		}
@@ -848,16 +848,16 @@ static
 	public static bool ValidateBufferTransitionBarrierDesc(DeviceVal device, uint32 i, BufferTransitionBarrierDesc bufferTransitionBarrierDesc)
 	{
 		RETURN_ON_FAILURE!(device.GetLogger(), bufferTransitionBarrierDesc.buffer != null, false,
-			"Can't record pipeline barrier: 'transitionBarriers.buffers[%u].buffer' is invalid.", i);
+			"Can't record pipeline barrier: 'transitionBarriers.buffers[{0}].buffer' is invalid.", i);
 
 		readonly BufferVal bufferVal = (BufferVal)bufferTransitionBarrierDesc.buffer;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(bufferVal.GetDesc().usageMask, bufferTransitionBarrierDesc.prevAccess), false,
-			"Can't record pipeline barrier: 'transitionBarriers.buffers[%u].prevAccess' is not supported by the usage mask of the buffer ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.buffers[{0}].prevAccess' is not supported by the usage mask of the buffer ('{1}').",
 			i, bufferVal.GetDebugName().CStr());
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(bufferVal.GetDesc().usageMask, bufferTransitionBarrierDesc.nextAccess), false,
-			"Can't record pipeline barrier: 'transitionBarriers.buffers[%u].nextAccess' is not supported by the usage mask of the buffer ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.buffers[{0}].nextAccess' is not supported by the usage mask of the buffer ('{1}').",
 			i, bufferVal.GetDebugName().CStr());
 
 		return true;
@@ -866,24 +866,24 @@ static
 	public static bool ValidateTextureTransitionBarrierDesc(DeviceVal device, uint32 i, TextureTransitionBarrierDesc textureTransitionBarrierDesc)
 	{
 		RETURN_ON_FAILURE!(device.GetLogger(), textureTransitionBarrierDesc.texture != null, false,
-			"Can't record pipeline barrier: 'transitionBarriers.textures[%u].texture' is invalid.", i);
+			"Can't record pipeline barrier: 'transitionBarriers.textures[{0}].texture' is invalid.", i);
 
 		readonly TextureVal textureVal = (TextureVal)textureTransitionBarrierDesc.texture;
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(textureVal.GetDesc().usageMask, textureTransitionBarrierDesc.prevAccess), false,
-			"Can't record pipeline barrier: 'transitionBarriers.textures[%u].prevAccess' is not supported by the usage mask of the texture ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.textures[{0}].prevAccess' is not supported by the usage mask of the texture ('{1}').",
 			i, textureVal.GetDebugName().CStr());
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsAccessMaskSupported(textureVal.GetDesc().usageMask, textureTransitionBarrierDesc.nextAccess), false,
-			"Can't record pipeline barrier: 'transitionBarriers.textures[%u].nextAccess' is not supported by the usage mask of the texture ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.textures[{0}].nextAccess' is not supported by the usage mask of the texture ('{1}').",
 			i, textureVal.GetDebugName().CStr());
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsTextureLayoutSupported(textureVal.GetDesc().usageMask, textureTransitionBarrierDesc.prevLayout), false,
-			"Can't record pipeline barrier: 'transitionBarriers.textures[%u].prevLayout' is not supported by the usage mask of the texture ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.textures[{0}].prevLayout' is not supported by the usage mask of the texture ('{1}').",
 			i, textureVal.GetDebugName().CStr());
 
 		RETURN_ON_FAILURE!(device.GetLogger(), IsTextureLayoutSupported(textureVal.GetDesc().usageMask, textureTransitionBarrierDesc.nextLayout), false,
-			"Can't record pipeline barrier: 'transitionBarriers.textures[%u].nextLayout' is not supported by the usage mask of the texture ('%s').",
+			"Can't record pipeline barrier: 'transitionBarriers.textures[{0}].nextLayout' is not supported by the usage mask of the texture ('{1}').",
 			i, textureVal.GetDebugName().CStr());
 
 		return true;

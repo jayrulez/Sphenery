@@ -47,21 +47,21 @@ class MemoryVal : DeviceObjectVal<IMemory>, IMemory
 		for (int i = 0; i < m_Buffers.Count; i++)
 		{
 			BufferVal buffer = m_Buffers[i];
-			REPORT_ERROR(m_Device.GetLogger(), "Buffer (%p '%s') is still bound to the memory.",
+			REPORT_ERROR(m_Device.GetLogger(), "Buffer ({0} '{1}') is still bound to the memory.",
 				&buffer, buffer.GetDebugName().CStr());
 		}
 
 		for (int i = 0; i < m_Textures.Count; i++)
 		{
 			TextureVal texture = m_Textures[i];
-			REPORT_ERROR(m_Device.GetLogger(), "Texture (%p '%s') is still bound to the memory.",
+			REPORT_ERROR(m_Device.GetLogger(), "Texture ({0} '{1}') is still bound to the memory.",
 				&texture, texture.GetDebugName().CStr());
 		}
 
 		for (int i = 0; i < m_AccelerationStructures.Count; i++)
 		{
 			AccelerationStructureVal accelerationStructure = m_AccelerationStructures[i];
-			REPORT_ERROR(m_Device.GetLogger(), "AccelerationStructure (%p '%s') is still bound to the memory.",
+			REPORT_ERROR(m_Device.GetLogger(), "AccelerationStructure ({0} '{1}') is still bound to the memory.",
 				&accelerationStructure, accelerationStructure.GetDebugName().CStr());
 		}
 	}

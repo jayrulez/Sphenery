@@ -97,7 +97,7 @@ class DescriptorPoolVal : DeviceObjectVal<IDescriptorPool>, IDescriptorPool
 				bool enoughDescriptors = CheckDescriptorRange(rangeDesc, variableDescriptorNum);
 
 				RETURN_ON_FAILURE!(m_Device.GetLogger(), enoughDescriptors, Result.INVALID_ARGUMENT,
-					"Can't allocate DescriptorSet: the maximum number of descriptors exceeded ('%s').", GetDescriptorTypeName(rangeDesc.descriptorType));
+					"Can't allocate DescriptorSet: the maximum number of descriptors exceeded ('{0}').", GetDescriptorTypeName(rangeDesc.descriptorType));
 			}
 
 			bool enoughDescriptors = m_DynamicConstantBufferNum + descriptorSetDesc.dynamicConstantBufferNum <= m_Desc.dynamicConstantBufferMaxNum;
@@ -140,7 +140,7 @@ class DescriptorPoolVal : DeviceObjectVal<IDescriptorPool>, IDescriptorPool
 
 		if (descriptorNum > rangeDesc.descriptorNum)
 		{
-			REPORT_ERROR(m_Device.GetLogger(), "variableDescriptorNum (%u) is greater than DescriptorRangeDesc.descriptorNum (%u).",
+			REPORT_ERROR(m_Device.GetLogger(), "variableDescriptorNum ({0}) is greater than DescriptorRangeDesc.descriptorNum ({1}).",
 				variableDescriptorNum, rangeDesc.descriptorNum);
 
 			return false;
@@ -167,7 +167,7 @@ class DescriptorPoolVal : DeviceObjectVal<IDescriptorPool>, IDescriptorPool
 		case DescriptorType.ACCELERATION_STRUCTURE:
 			return m_AccelerationStructureNum + descriptorNum <= m_Desc.accelerationStructureMaxNum;
 		default:
-			REPORT_ERROR(m_Device.GetLogger(), "Unknown descriptor range type: %u", (uint32)rangeDesc.descriptorType);
+			REPORT_ERROR(m_Device.GetLogger(), "Unknown descriptor range type: {0}", (uint32)rangeDesc.descriptorType);
 			return false;
 		}
 	}
@@ -206,7 +206,7 @@ class DescriptorPoolVal : DeviceObjectVal<IDescriptorPool>, IDescriptorPool
 			m_AccelerationStructureNum += descriptorNum;
 			return;
 		default:
-			REPORT_ERROR(m_Device.GetLogger(), "Unknown descriptor range type: %u", (uint32)rangeDesc.descriptorType);
+			REPORT_ERROR(m_Device.GetLogger(), "Unknown descriptor range type: {0}", (uint32)rangeDesc.descriptorType);
 			return;
 		}
 	}

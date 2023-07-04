@@ -32,10 +32,10 @@ class DescriptorSetVal : DeviceObjectVal<IDescriptorSet>, IDescriptorSet
 			"Can't update descriptor ranges: 'rangeUpdateDescs' is invalid.");
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), rangeOffset < m_Desc.rangeNum, void(),
-			"Can't update descriptor ranges: 'rangeOffset' is out of bounds. (rangeOffset=%u, rangeNum=%u)", rangeOffset, m_Desc.rangeNum);
+			"Can't update descriptor ranges: 'rangeOffset' is out of bounds. (rangeOffset={0}, rangeNum={1})", rangeOffset, m_Desc.rangeNum);
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), rangeOffset + rangeNum <= m_Desc.rangeNum, void(),
-			"Can't update descriptor ranges: 'rangeOffset' + 'rangeNum' is greater than the number of ranges. (rangeOffset=%u, rangeNum=%u, rangeNum=%u)",
+			"Can't update descriptor ranges: 'rangeOffset' + 'rangeNum' is greater than the number of ranges. (rangeOffset={0}, rangeNum={1}, rangeNum={2})",
 			rangeOffset, rangeNum, m_Desc.rangeNum);
 
 		DescriptorRangeUpdateDesc* rangeUpdateDescsImpl = STACK_ALLOC!<DescriptorRangeUpdateDesc>(rangeNum);
@@ -45,18 +45,18 @@ class DescriptorSetVal : DeviceObjectVal<IDescriptorSet>, IDescriptorSet
 			readonly ref DescriptorRangeDesc rangeDesc = ref m_Desc.ranges[rangeOffset + i];
 
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.descriptorNum != 0, void(),
-				"Can't update descriptor ranges: 'rangeUpdateDescs[%u].descriptorNum' is zero.", i);
+				"Can't update descriptor ranges: 'rangeUpdateDescs[{0}].descriptorNum' is zero.", i);
 
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.offsetInRange < rangeDesc.descriptorNum, void(),
-				"Can't update descriptor ranges: 'rangeUpdateDescs[%u].offsetInRange' is greater than the number of descriptors. (offsetInRange=%u, rangeDescriptorNum=%u, descriptorType=%s)",
+				"Can't update descriptor ranges: 'rangeUpdateDescs[{0}].offsetInRange' is greater than the number of descriptors. (offsetInRange={1}, rangeDescriptorNum={2}, descriptorType={3})",
 				i, updateDesc.offsetInRange, rangeDesc.descriptorNum, GetDescriptorTypeName(rangeDesc.descriptorType));
 
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.offsetInRange + updateDesc.descriptorNum <= rangeDesc.descriptorNum, void(),
-				"Can't update descriptor ranges: 'rangeUpdateDescs[%u].offsetInRange' + 'rangeUpdateDescs[%u].descriptorNum' is greater than the number of descriptors. (offsetInRange=%u, descriptorNum=%u, rangeDescriptorNum=%u, descriptorType=%s)",
+				"Can't update descriptor ranges: 'rangeUpdateDescs[{0}].offsetInRange' + 'rangeUpdateDescs[{1}].descriptorNum' is greater than the number of descriptors. (offsetInRange={2}, descriptorNum={3}, rangeDescriptorNum={4}, descriptorType={5})",
 				i, i, updateDesc.offsetInRange, updateDesc.descriptorNum, rangeDesc.descriptorNum, GetDescriptorTypeName(rangeDesc.descriptorType));
 
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.descriptors != null, void(),
-				"Can't update descriptor ranges: 'rangeUpdateDescs[%u].descriptors' is invalid.", i);
+				"Can't update descriptor ranges: 'rangeUpdateDescs[{0}].descriptors' is invalid.", i);
 
 			ref DescriptorRangeUpdateDesc dstDesc = ref rangeUpdateDescsImpl[i];
 
@@ -67,7 +67,7 @@ class DescriptorSetVal : DeviceObjectVal<IDescriptorSet>, IDescriptorSet
 			for (uint32 j = 0; j < updateDesc.descriptorNum; j++)
 			{
 				RETURN_ON_FAILURE!(m_Device.GetLogger(), updateDesc.descriptors[j] != null, void(),
-					"Can't update descriptor ranges: 'rangeUpdateDescs[%u].descriptors[%u]' is invalid.", i, j);
+					"Can't update descriptor ranges: 'rangeUpdateDescs[{0}].descriptors[{1}]' is invalid.", i, j);
 
 				descriptors[j] = NRI_GET_IMPL_PTR!<IDescriptor...>((DescriptorVal)updateDesc.descriptors[j]);
 			}
@@ -82,11 +82,11 @@ class DescriptorSetVal : DeviceObjectVal<IDescriptorSet>, IDescriptorSet
 			return;
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), baseBuffer < m_Desc.dynamicConstantBufferNum, void(),
-			"Can't update dynamic constant buffers: 'baseBuffer' is invalid. (baseBuffer=%u, dynamicConstantBufferNum=%u)",
+			"Can't update dynamic constant buffers: 'baseBuffer' is invalid. (baseBuffer={0}, dynamicConstantBufferNum={1})",
 			baseBuffer, m_Desc.dynamicConstantBufferNum);
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), baseBuffer + bufferNum <= m_Desc.dynamicConstantBufferNum, void(),
-			"Can't update dynamic constant buffers: 'baseBuffer' + 'bufferNum' is greater than the number of buffers. (baseBuffer=%u, bufferNum=%u, dynamicConstantBufferNum=%u)",
+			"Can't update dynamic constant buffers: 'baseBuffer' + 'bufferNum' is greater than the number of buffers. (baseBuffer={0}, bufferNum={1}, dynamicConstantBufferNum={2})",
 			baseBuffer, bufferNum, m_Desc.dynamicConstantBufferNum);
 
 		RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptors != null, void(),
@@ -96,7 +96,7 @@ class DescriptorSetVal : DeviceObjectVal<IDescriptorSet>, IDescriptorSet
 		for (uint32 i = 0; i < bufferNum; i++)
 		{
 			RETURN_ON_FAILURE!(m_Device.GetLogger(), descriptors[i] != null, void(),
-				"Can't update dynamic constant buffers: 'descriptors[%u]' is invalid.", i);
+				"Can't update dynamic constant buffers: 'descriptors[{0}]' is invalid.", i);
 
 			descriptorsImpl[i] = NRI_GET_IMPL_PTR!<IDescriptor...>((DescriptorVal)descriptors[i]);
 		}
