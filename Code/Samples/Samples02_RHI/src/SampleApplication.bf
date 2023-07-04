@@ -5,20 +5,10 @@ using System.Collections;
 using System;
 using Sedulous.RHI.Validation;
 using Sedulous.ShaderCompiler;
+using Sedulous.Graphics;
 namespace Samples02_RHI;
 
-struct Frame
-{
-	public ICommandAllocator commandAllocator;
-	public ICommandBuffer commandBuffer;
-}
 
-struct BackBuffer
-{
-	public IFrameBuffer frameBuffer;
-	public IDescriptor colorAttachment;
-	public ITexture texture;
-}
 
 class SampleApplication : Application
 {
@@ -29,24 +19,15 @@ class SampleApplication : Application
 			constantBufferOffset = 300,
 			storageTextureAndBufferOffset = 400
 		};
-
-	private const uint32 BUFFERED_FRAME_MAX_NUM = 3;
-	private const uint32 SWAP_CHAIN_TEXTURE_NUM  = BUFFERED_FRAME_MAX_NUM;
-
-	private uint32 m_VsyncInterval = 0;
+	
 
 	private IDevice mDevice;
 	private DeviceLogger mDeviceLogger;
 	private DeviceAllocator<uint8> mDeviceAllocator;
 
-	private ISwapChain mSwapChain = null;
-	private ICommandQueue mCommandQueue = null;
-	private IFence mFrameFence = null;
+	private GraphicsRenderDelegate mGraphicsRenderDelegate;
 
-	private Frame[BUFFERED_FRAME_MAX_NUM] m_Frames = .();
-	private List<BackBuffer> m_SwapChainBuffers = new .() ~ delete _;
-
-	private uint32 mFrameIndex = 0;
+	private GraphicsPlugin mGraphicsPlugin;
 
 	public this(IApplicationHost host, ApplicationConfiguration configuration)
 		: base(host, configuration)
@@ -91,10 +72,10 @@ class SampleApplication : Application
 		device.Destroy();
 	}
 
-	protected override void OnInitialized()
+	protected override void OnInitializing(ApplicationInitializer initializer)
 	{
-		Logger.LogInformation(nameof(OnInitialized));
-
+		Logger.LogInformation(nameof(OnInitializing));
+		
 		HLSLShaderCompiler shaderCompiler = scope .();
 
 		List<uint8> fragmentShaderByteCode = scope .();
@@ -138,8 +119,6 @@ class SampleApplication : Application
 			}
 		}
 
-		var window = Host.Platform.WindowSystem.PrimaryWindow;
-
 		mDeviceLogger = new .(.VULKAN, default);
 		mDeviceAllocator = new .(MemoryAllocatorInterface());
 		DeviceCreationDesc desc = .()
@@ -148,148 +127,51 @@ class SampleApplication : Application
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			};
 
-
 		Result result = CreateDevice(desc, mDeviceLogger, mDeviceAllocator, out mDevice);
 		if (result != .SUCCESS)
 		{
 			Runtime.FatalError(scope $"Device creation failed: {result}");
 		}
 
-		// Command queue
-		result = mDevice.GetCommandQueue(CommandQueueType.GRAPHICS, out mCommandQueue);
-		if (result != .SUCCESS)
-		{
-			Runtime.FatalError(scope $"Error: {result}");
-		}
+		mGraphicsPlugin = new .(mDevice, Host.Platform.WindowSystem.PrimaryWindow);
 
-		// Fences
-		result = mDevice.CreateFence(0, out mFrameFence);
-		if (result != .SUCCESS)
-		{
-			Runtime.FatalError(scope $"Error: {result}");
-		}
+		mGraphicsPlugin.OnRendering.Subscribe(mGraphicsRenderDelegate = new => this.RenderFrame);
 
-		// Swap chain
-		Format swapChainFormat = default;
-		{
-			SwapChainDesc swapChainDesc = .();
-			swapChainDesc.windowSystemType = .WINDOWS;
-			swapChainDesc.window = .()
-				{
-					windows = .()
-						{
-							hwnd = window.NativePointers.Get("hwnd")
-						}
-				};
-			swapChainDesc.commandQueue = mCommandQueue;
-			swapChainDesc.format = SwapChainFormat.BT709_G22_8BIT;
-			swapChainDesc.verticalSyncInterval = m_VsyncInterval;
-			swapChainDesc.width = (uint16)window.ClientSize.Width;
-			swapChainDesc.height = (uint16)window.ClientSize.Height;
-			swapChainDesc.textureNum = SWAP_CHAIN_TEXTURE_NUM;
-			result = mDevice.CreateSwapChain(swapChainDesc, out mSwapChain);
-			if (result != .SUCCESS)
-			{
-				Runtime.FatalError(scope $"Error: {result}");
-			}
+		initializer.AddPlugin(mGraphicsPlugin);
+	}
 
-			uint32 swapChainTextureNum = 0;
-			ITexture* swapChainTextures = mSwapChain.GetTextures(ref swapChainTextureNum, ref swapChainFormat);
+	protected override void OnInitialized()
+	{
+		Logger.LogInformation(nameof(OnInitialized));
+	}
 
-			for (uint32 i = 0; i < swapChainTextureNum; i++)
-			{
-				Texture2DViewDesc textureViewDesc = .() { texture = swapChainTextures[i], viewType = Texture2DViewType.COLOR_ATTACHMENT, format = swapChainFormat };
-
-				IDescriptor colorAttachment = null;
-				mDevice.CreateTexture2DView(textureViewDesc, out colorAttachment);
-
-				FrameBufferDesc frameBufferDesc = .();
-				frameBufferDesc.colorAttachmentNum = 1;
-				frameBufferDesc.colorAttachments = &colorAttachment;
-				IFrameBuffer frameBuffer = null;
-				mDevice.CreateFrameBuffer(frameBufferDesc, out frameBuffer);
-
-				readonly BackBuffer backBuffer = .() { frameBuffer = frameBuffer, colorAttachment = colorAttachment, texture = swapChainTextures[i] };
-				m_SwapChainBuffers.Add(backBuffer);
-			}
-		}
-
-		// Buffered resources
-		for (ref Frame frame in ref m_Frames)
-		{
-			result = mDevice.CreateCommandAllocator(mCommandQueue, WHOLE_DEVICE_GROUP, out frame.commandAllocator);
-			if (result != .SUCCESS)
-			{
-				Runtime.FatalError(scope $"Error: {result}");
-			}
-			result = frame.commandAllocator.CreateCommandBuffer(out frame.commandBuffer);
-			if (result != .SUCCESS)
-			{
-				Runtime.FatalError(scope $"Error: {result}");
-			}
-		}
+	protected override void OnShuttingdown()
+	{
+		Logger.LogInformation(nameof(OnShuttingdown));
 	}
 
 	protected override void OnShutdown()
 	{
 		Logger.LogInformation(nameof(OnShutdown));
 
-		mCommandQueue.WaitForIdle();
+		mGraphicsPlugin.OnRendering.Unsubscribe(mGraphicsRenderDelegate);
 
-		for (ref Frame frame in ref m_Frames)
-		{
-			mDevice.DestroyCommandBuffer(frame.commandBuffer);
-			mDevice.DestroyCommandAllocator(frame.commandAllocator);
-		}
-
-		for (ref BackBuffer backBuffer in ref m_SwapChainBuffers)
-		{
-			mDevice.DestroyFrameBuffer(backBuffer.frameBuffer);
-			mDevice.DestroyDescriptor(backBuffer.colorAttachment);
-		}
-
-		mDevice.DestroyFence(mFrameFence);
-		mDevice.DestroySwapChain(mSwapChain);
+		delete mGraphicsPlugin;
 
 		DestroyDevice(mDevice);
 		delete mDeviceAllocator;
 		delete mDeviceLogger;
 	}
 
-	protected override void OnPostUpdate(ApplicationUpdateInfo info)
+	private void RenderFrame(RenderFrame renderFrame)
 	{
-		//double fps = 1000 / info.Time.ElapsedTime.TotalMilliseconds;
-		//mLogger.LogInformation("{0} {1} {2}", nameof(OnPostUpdate), info.Time.ElapsedTime, fps);
-	}
+		readonly uint32 windowWidth = (.)mGraphicsPlugin.Window.ClientSize.Width;
+		readonly uint32 windowHeight = (.)mGraphicsPlugin.Window.ClientSize.Height;
 
-	protected override void OnUpdate(ApplicationUpdateInfo info)
-	{
-		RenderFrame(mFrameIndex++);
-	}
-
-	private void RenderFrame(uint32 frameIndex)
-	{
-		var window = Host.Platform.WindowSystem.PrimaryWindow;
-
-		readonly uint32 windowWidth = (.)window.ClientSize.Width;
-		readonly uint32 windowHeight = (.)window.ClientSize.Height;
-		readonly uint32 bufferedFrameIndex = frameIndex % BUFFERED_FRAME_MAX_NUM;
-		/*readonly*/ ref Frame frame = ref m_Frames[bufferedFrameIndex];
-
-		if (frameIndex >= BUFFERED_FRAME_MAX_NUM)
-		{
-			mFrameFence.Wait(1 + frameIndex - BUFFERED_FRAME_MAX_NUM);
-			frame.commandAllocator.Reset();
-		}
-
-		readonly uint32 backBufferIndex = mSwapChain.AcquireNextTexture();
-		readonly ref BackBuffer backBuffer = ref m_SwapChainBuffers[backBufferIndex];
-
-		ICommandBuffer commandBuffer = frame.commandBuffer;
-		commandBuffer.Begin(null, 0);
+		var commandBuffer = renderFrame.CommandBuffer;
 		{
 			TextureTransitionBarrierDesc textureTransitionBarrierDesc = .();
-			textureTransitionBarrierDesc.texture = backBuffer.texture;
+			textureTransitionBarrierDesc.texture = renderFrame.BackBufferTexture;
 			textureTransitionBarrierDesc.prevAccess = AccessBits.UNKNOWN;
 			textureTransitionBarrierDesc.nextAccess = AccessBits.COLOR_ATTACHMENT;
 			textureTransitionBarrierDesc.prevLayout = TextureLayout.UNKNOWN;
@@ -302,7 +184,7 @@ class SampleApplication : Application
 			transitionBarriers.textures = &textureTransitionBarrierDesc;
 			commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
 
-			commandBuffer.BeginRenderPass(backBuffer.frameBuffer, RenderPassBeginFlag.NONE);
+			commandBuffer.BeginRenderPass(renderFrame.FrameBuffer, RenderPassBeginFlag.NONE);
 			{
 				commandBuffer.BeginAnnotation("Clear");
 				defer commandBuffer.EndAnnotation();
@@ -331,15 +213,5 @@ class SampleApplication : Application
 
 			commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
 		}
-		commandBuffer.End();
-
-		QueueSubmitDesc queueSubmitDesc = .();
-		queueSubmitDesc.commandBuffers = &frame.commandBuffer;
-		queueSubmitDesc.commandBufferNum = 1;
-		mCommandQueue.Submit(queueSubmitDesc);
-
-		mSwapChain.Present();
-
-		mFrameFence.QueueSignal(mCommandQueue, 1 + frameIndex);
 	}
 }

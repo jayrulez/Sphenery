@@ -11,7 +11,7 @@ class SampleApplication : Application
 	{
 	}
 
-	protected override void OnInitializing()
+	protected override void OnInitializing(ApplicationInitializer initializer)
 	{
 		Logger.LogInformation(nameof(OnInitializing));
 	}

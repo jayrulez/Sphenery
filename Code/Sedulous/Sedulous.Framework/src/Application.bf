@@ -7,6 +7,7 @@ using Sedulous.Core.Logging.Abstractions;
 using Sedulous.Framework.Jobs;
 using Sedulous.Core.Messaging;
 using Sedulous.Framework.Messaging;
+using Sedulous.Framework.Content;
 namespace Sedulous.Framework;
 
 using internal Sedulous.Core;
@@ -71,10 +72,13 @@ class Application : IMessageSubscriber<MessageId>
 		};
 
 	private readonly ILogger mLogger;
-	public ILogger Logger { get => mLogger; }
+	public ILogger Logger => mLogger;
 
 	private readonly JobSystem mJobSystem = null;
-	public JobSystem JobSystem { get => mJobSystem; }
+	public JobSystem JobSystem => mJobSystem;
+
+	private readonly ContentSystem mContentSystem = null;
+	public ContentSystem ContentSystem => mContentSystem;
 
 	// The application event queue.
 	private readonly LocalMessageQueue<MessageId> mMessages = new .() ~ delete _;
@@ -92,6 +96,7 @@ class Application : IMessageSubscriber<MessageId>
 			});
 
 		mJobSystem = new .(this, 4);
+		mContentSystem = new .();
 
 		mHost = host;
 		mLogger = host.Logger;
@@ -100,6 +105,7 @@ class Application : IMessageSubscriber<MessageId>
 
 	public ~this()
 	{
+		delete mContentSystem;
 		delete mJobSystem;
 
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
@@ -137,7 +143,11 @@ class Application : IMessageSubscriber<MessageId>
 		}
 		mJobSystem.Startup();
 
-		OnInitializing();
+		var initializer = scope ApplicationInitializer();
+
+		OnInitializing(initializer);
+
+		mPlugins.AddRange(initializer.Plugins);
 
 		mTickTimer.Start();
 
@@ -266,6 +276,7 @@ class Application : IMessageSubscriber<MessageId>
 		{
 			RunUpdateFunctions(.PreUpdate, .()
 				{
+					Application = this,
 					State = mState,
 					Time = mPreUpdateTimeTracker.Increment(TimeSpan(elapsedTicks), false)
 				});
@@ -290,6 +301,7 @@ class Application : IMessageSubscriber<MessageId>
 				{
 					RunUpdateFunctions(.FixedUpdate, .()
 						{
+							Application = this,
 							State = mState,
 							Time = mFixedUpdateTimeTracker.Increment(timeDeltaFixedUpdate, mRunningSlowly)
 						});
@@ -301,6 +313,7 @@ class Application : IMessageSubscriber<MessageId>
 		{
 			RunUpdateFunctions(.Update, .()
 				{
+					Application = this,
 					State = mState,
 					Time = mUpdateTimeTracker.Increment(TimeSpan(elapsedTicks), false)
 				});
@@ -310,6 +323,7 @@ class Application : IMessageSubscriber<MessageId>
 		{
 			RunUpdateFunctions(.PostUpdate, .()
 				{
+					Application = this,
 					State = mState,
 					Time = mPostUpdateTimeTracker.Increment(TimeSpan(elapsedTicks), false)
 				});
@@ -384,7 +398,7 @@ class Application : IMessageSubscriber<MessageId>
 	}
 
 #region Lifecycle methods
-	protected virtual void OnInitializing() { }
+	protected virtual void OnInitializing(ApplicationInitializer initializer) { }
 	protected virtual void OnInitialized() { }
 	protected virtual void OnShuttingdown() { }
 	protected virtual void OnShutdown() { }
