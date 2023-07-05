@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sphenery.Core" = "*"}
+
+[Project]
+Name = "Sphenery.Framework"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.Framework.Program"

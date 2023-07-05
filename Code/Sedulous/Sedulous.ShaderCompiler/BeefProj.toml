@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", Dxc-Beef = "*", "Sedulous.RHI" = "*"}
-
-[Project]
-Name = "Sedulous.ShaderCompiler"
-TargetType = "BeefLib"
-StartupObject = "Sedulous.ShaderCompiler.Program"

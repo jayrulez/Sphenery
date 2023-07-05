@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Dxc-Beef = "*", "Sphenery.RHI" = "*"}
+
+[Project]
+Name = "Sphenery.ShaderCompiler"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.ShaderCompiler.Program"

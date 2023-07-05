@@ -1,6 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Framework" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Vulkan" = "*", "Sedulous.SDL" = "*", "Sedulous.ShaderCompiler" = "*", "Sedulous.Graphics" = "*"}
-
-[Project]
-Name = "Samples02_RHI"
-StartupObject = "Samples02_RHI.Program"

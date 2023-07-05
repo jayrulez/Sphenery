@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sphenery.Framework" = "*", "Sphenery.RHI" = "*", "Sphenery.RHI.Vulkan" = "*", "Sphenery.SDL" = "*", "Sphenery.ShaderCompiler" = "*", "Sphenery.Graphics" = "*"}
+
+[Project]
+Name = "Sample02_RHI"
+StartupObject = "Sample02_RHI.Program"

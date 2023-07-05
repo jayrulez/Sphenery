@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sphenery.RHI"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.RHI.Program"

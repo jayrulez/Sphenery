@@ -1,10 +1,10 @@
 using System;
-using Sedulous.SDL;
-using Sedulous.Framework;
-using Sedulous.Framework.Platform;
-using Sedulous.Framework.Platform.Window;
-using Sedulous.Core.Logging.Abstractions;
-using Sedulous.Foundation.Logging.Debug;
+using Sphenery.SDL;
+using Sphenery.Framework;
+using Sphenery.Framework.Platform;
+using Sphenery.Framework.Platform.Window;
+using Sphenery.Core.Logging.Abstractions;
+using Sphenery.Foundation.Logging.Debug;
 namespace Sample01_BasicApplication;
 
 class Program : SDLApplicationHost

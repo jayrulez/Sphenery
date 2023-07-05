@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Bulkan = "*", "Sphenery.RHI" = "*"}
+
+[Project]
+Name = "Sphenery.RHI.Vulkan"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.RHI.Vulkan.Program"

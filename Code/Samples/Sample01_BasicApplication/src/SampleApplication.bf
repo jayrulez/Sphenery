@@ -1,6 +1,6 @@
-using Sedulous.Framework;
-using Sedulous.Core.Logging.Abstractions;
-using Sedulous.Foundation.Logging.Debug;
+using Sphenery.Framework;
+using Sphenery.Core.Logging.Abstractions;
+using Sphenery.Foundation.Logging.Debug;
 using System.Threading;
 namespace Sample01_BasicApplication;
 

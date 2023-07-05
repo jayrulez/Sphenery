@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Framework" = "*", "Sedulous.SDL" = "*"}
+Dependencies = {corlib = "*", "Sphenery.Framework" = "*", "Sphenery.SDL" = "*"}
 
 [Project]
 Name = "Sample01_BasicApplication"

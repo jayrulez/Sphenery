@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", SDL2 = "*", "Sphenery.Framework" = "*"}
+
+[Project]
+Name = "Sphenery.SDL"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.SDL.Program"

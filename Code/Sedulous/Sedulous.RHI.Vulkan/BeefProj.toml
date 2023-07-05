@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.RHI" = "*"}
-
-[Project]
-Name = "Sedulous.RHI.Vulkan"
-TargetType = "BeefLib"
-StartupObject = "Sedulous.RHI.Vulkan.Program"

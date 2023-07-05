@@ -1,4 +1,4 @@
-using Sedulous.Framework;
+using Sphenery.Framework;
 namespace Sample01_BasicApplication;
 
 class SamplePlugin : Plugin
