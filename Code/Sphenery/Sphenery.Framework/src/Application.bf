@@ -88,7 +88,7 @@ class Application : IMessageSubscriber<MessageId>
 	// generic method dispatch on interfaces (which we need for CreateMessage)
 	public LocalMessageQueue<MessageId> Messages => mMessages;
 
-	public this(IApplicationHost host, ApplicationConfiguration configuration)
+	public this(IApplicationHost host)
 	{
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>
 			{
@@ -100,7 +100,6 @@ class Application : IMessageSubscriber<MessageId>
 
 		mHost = host;
 		mLogger = host.Logger;
-		mPlugins.AddRange(configuration.Plugins);
 	}
 
 	public ~this()
@@ -135,15 +134,13 @@ class Application : IMessageSubscriber<MessageId>
 			});
 	}
 
-	internal void Initialize()
+	internal void Initialize(ApplicationInitializer initializer)
 	{
 		if (mInitialized)
 		{
 			return;
 		}
 		mJobSystem.Startup();
-
-		var initializer = scope ApplicationInitializer();
 
 		OnInitializing(initializer);
 

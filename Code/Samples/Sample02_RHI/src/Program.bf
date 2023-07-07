@@ -14,9 +14,9 @@ class Program : SDLApplicationHost
 	{
 	}
 
-	protected override Application CreateApplication(ApplicationConfiguration configuration)
+	protected override Application CreateApplication()
 	{
-		return new SampleApplication(this, configuration);
+		return new SampleApplication(this);
 	}
 
 	protected override void DestroyApplication(Application application)

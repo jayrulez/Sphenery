@@ -16,11 +16,15 @@ class Program : SDLApplicationHost
 	{
 	}
 
-	protected override Application CreateApplication(ApplicationConfiguration configuration)
+	protected override void OnInitializingApplication(ApplicationInitializer initializer)
 	{
-		configuration.AddPlugin(mSamplePlugin);
+		initializer.AddPlugin(mSamplePlugin);
+		base.OnInitializingApplication(initializer);
+	}
 
-		return new SampleApplication(this, configuration);
+	protected override Application CreateApplication()
+	{
+		return new SampleApplication(this);
 	}
 
 	protected override void DestroyApplication(Application application)

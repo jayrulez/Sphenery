@@ -5,7 +5,7 @@ namespace Sphenery.ShaderCompiler;
 
 struct IncludeHandler : IDxcIncludeHandler
 {
-	public this(IDxcLibrary* pLibrary, in String basePath)
+	public this(IDxcLibrary* pLibrary, String basePath)
 	{
 		m_pLibrary = pLibrary;
 		m_BasePath = basePath;

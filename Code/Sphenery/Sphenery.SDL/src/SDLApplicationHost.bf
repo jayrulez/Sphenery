@@ -65,9 +65,11 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 		OnReceivedMessage(type, data);
 	}
 
-	protected abstract Application CreateApplication(ApplicationConfiguration configuration);
+	protected abstract Application CreateApplication();
 
 	protected abstract void DestroyApplication(Application application);
+
+	protected virtual void OnInitializingApplication(ApplicationInitializer initializer){}
 
 	public void Exit()
 	{
@@ -80,9 +82,7 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 		defer mTimer.Stop();
 		mExitRequested = false;
 
-		var configuration = scope ApplicationConfiguration();
-
-		mApplication = CreateApplication(configuration);
+		mApplication = CreateApplication();
 		defer DestroyApplication(mApplication);
 
 		mPlatform = new SDLPlatform(mApplication);
@@ -102,7 +102,11 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 			window: var mPrimaryWindow);
 		defer mPlatform.WindowSystem.DestroyWindow(mPrimaryWindow);
 
-		mApplication.Initialize();
+		var initializer = scope ApplicationInitializer();
+
+		OnInitializingApplication(initializer);
+
+		mApplication.Initialize(initializer);
 		defer mApplication.Shutdown();
 
 		while (!mExitRequested)

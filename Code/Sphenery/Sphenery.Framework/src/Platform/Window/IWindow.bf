@@ -14,9 +14,10 @@ public delegate void WindowEventHandler(IWindow window);
 /// </summary>
 interface IWindow
 {
-	NativePointerRegistry NativePointers {get;}
-	IWindowSystem WindowSystem {get;}
-	
+	NativePointerRegistry NativePointers { get; }
+
+	IWindowSystem WindowSystem { get; }
+
 	/// <summary>
 	/// Gets the window's identifier within its windowing system.
 	/// </summary>
@@ -30,7 +31,7 @@ interface IWindow
 	/// <summary>
 	/// Gets or sets the scaling factor which is applied to the window.
 	/// </summary>
-	float WindowScale{ get; }
+	float WindowScale { get; }
 
 	/// <summary>
 	/// Gets or sets the window's position.
@@ -40,13 +41,13 @@ interface IWindow
 	/// <summary>
 	/// Gets or sets the position to which the window will be restored upon entering non-maximized windowed mode.
 	/// </summary>
-	Point2 WindowedPosition{ get; set; }
+	Point2 WindowedPosition { get; set; }
 
 	/// <summary>
 	/// Gets the window's drawable size. On high-density displays, this value may be larger than the value
 	/// of <see cref="ClientSize"/> due to the distinction between logical and virtual pixels.
 	/// </summary>
-	Size2 DrawableSize{ get; }
+	Size2 DrawableSize { get; }
 
 	/// <summary>
 	/// Gets or sets the window's client size.
@@ -56,66 +57,66 @@ interface IWindow
 	/// <summary>
 	/// Gets or sets the client size to which the window will be restored upon entering non-maximized windowed mode.
 	/// </summary>
-	Size2 WindowedClientSize{ get; set; }
+	Size2 WindowedClientSize { get; set; }
 
 	/// <summary>
 	/// Gets or sets the window's minimum client size.
 	/// </summary>
-	Size2 MinimumClientSize{ get; set; }
+	Size2 MinimumClientSize { get; set; }
 
 	/// <summary>
 	/// Gets or sets the window's maximum client size.
 	/// </summary>
-	Size2 MaximumClientSize{ get; set; }
+	Size2 MaximumClientSize { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this window's rendering is synchronized
 	/// with the vertical retrace (i.e, whether vsync is enabled).
 	/// </summary>
-	bool SynchronizeWithVerticalRetrace{ get; set; }
+	bool SynchronizeWithVerticalRetrace { get; set; }
 
 	/// <summary>
 	/// Gets a value indicating whether the window is currently active.
 	/// </summary>
-	bool Active{ get; }
+	bool Active { get; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this window is visible.
 	/// </summary>
-	bool Visible {get;}
+	bool Visible { get; }
 
 	/// <summary>
 	/// Gets a value indicating whether this window is resizable.
 	/// </summary>
-	bool Resizable{ get; }
+	bool Resizable { get; }
 
 	/// <summary>
 	/// Gets a value indicating whether this window is borderless.
 	/// </summary>
-	bool Borderless{ get; }
+	bool Borderless { get; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this window grabs
 	/// the mouse when it enters windowed mode.
 	/// </summary>
-	bool GrabsMouseWhenWindowed{ get; set; }
+	bool GrabsMouseWhenWindowed { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this window grabs
 	/// the mouse when it enters fullscreen windowed mode.
 	/// </summary>
-	bool GrabsMouseWhenFullscreenWindowed{ get; set; }
+	bool GrabsMouseWhenFullscreenWindowed { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this window grabs 
 	/// the mouse when it enters fullscreen mode.
 	/// </summary>
-	bool GrabsMouseWhenFullscreen{ get; set; }
+	bool GrabsMouseWhenFullscreen { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value (from 0.0f to 1.0f) representing the window's opacity.
 	/// </summary>
-	float Opacity{ get; set; }
+	float Opacity { get; set; }
 
 	/// <summary>
 	/// Gets or sets the window's icon.
@@ -227,25 +228,25 @@ interface IWindow
 	/// <summary>
 	/// Occurs when the window is shown.
 	/// </summary>
-	EventAccessor<WindowEventHandler> Shown {get;}
+	EventAccessor<WindowEventHandler> Shown { get; }
 
 	/// <summary>
 	/// Occurs when the window is hidden.
 	/// </summary>
-	EventAccessor<WindowEventHandler> Hidden {get;}
+	EventAccessor<WindowEventHandler> Hidden { get; }
 
 	/// <summary>
 	/// Occurs when the window is minimized.
 	/// </summary>
-	EventAccessor<WindowEventHandler> Minimized {get;}
+	EventAccessor<WindowEventHandler> Minimized { get; }
 
 	/// <summary>
 	/// Occurs when the window is maximized.
 	/// </summary>
-	EventAccessor<WindowEventHandler> Maximized {get;}
+	EventAccessor<WindowEventHandler> Maximized { get; }
 
 	/// <summary>
 	/// Occurs when the window is restored.
 	/// </summary>
-	EventAccessor<WindowEventHandler> Restored {get;}
+	EventAccessor<WindowEventHandler> Restored { get; }
 }

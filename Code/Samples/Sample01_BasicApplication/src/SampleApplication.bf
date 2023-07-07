@@ -6,8 +6,8 @@ namespace Sample01_BasicApplication;
 
 class SampleApplication : Application
 {
-	public this(IApplicationHost host, ApplicationConfiguration configuration)
-		: base(host, configuration)
+	public this(IApplicationHost host)
+		: base(host)
 	{
 	}
 

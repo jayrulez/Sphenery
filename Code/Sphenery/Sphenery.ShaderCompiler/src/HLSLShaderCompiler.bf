@@ -104,38 +104,39 @@ class HLSLShaderCompiler
 	public Result<void> CompileShader(ShaderCompilationOptions options, List<uint8> compiledByteCode)
 	{
 		static String[?] optimizationLevels = .(
-		    DXC_ARG_SKIP_OPTIMIZATIONS,
+			DXC_ARG_SKIP_OPTIMIZATIONS,
 			DXC_ARG_OPTIMIZATION_LEVEL0,
-		    DXC_ARG_OPTIMIZATION_LEVEL1,
-		    DXC_ARG_OPTIMIZATION_LEVEL2,
-		    DXC_ARG_OPTIMIZATION_LEVEL3,
-		);
+			DXC_ARG_OPTIMIZATION_LEVEL1,
+			DXC_ARG_OPTIMIZATION_LEVEL2,
+			DXC_ARG_OPTIMIZATION_LEVEL3
+			);
 
 		// Gather SPIRV register shifts once
 		static String[?] regShiftArgs = .(
-		    "-fvk-s-shift",
-		    "-fvk-t-shift",
-		    "-fvk-b-shift",
-		    "-fvk-u-shift",
-		);
+			"-fvk-s-shift",
+			"-fvk-t-shift",
+			"-fvk-b-shift",
+			"-fvk-u-shift"
+			);
 
 		int[?] regShiftVals = .(
 			options.sRegShift,
 			options.tRegShift,
 			options.bRegShift,
-			options.sRegShift,
-		);
+			options.sRegShift
+			);
 
 		List<String> regShifts = scope .();
 
-	    for (int space = 0; space < SPIRV_SPACES_NUM; space++)
-	    {
-			for(int reg = 0; reg < 4; reg++){
+		for (int space = 0; space < SPIRV_SPACES_NUM; space++)
+		{
+			for (int reg = 0; reg < 4; reg++)
+			{
 				regShifts.Add(regShiftArgs[reg]);
 				regShifts.Add(scope :: $"{regShiftVals[reg]}");
 				regShifts.Add(scope :: $"{space}");
 			}
-	    }
+		}
 
 		IDxcCompiler3* pCompiler = null;
 
@@ -157,7 +158,7 @@ class HLSLShaderCompiler
 		arguments.Add(target);
 
 		arguments.Add("-E");
-		arguments.Add(scope :: String(options.entryPoint));
+		arguments.Add(scope:: String(options.entryPoint));
 
 		if (options.defines != null)
 		{
@@ -193,15 +194,16 @@ class HLSLShaderCompiler
 		arguments.Add("-enable-16bit-types");
 
 		if (options.warningsAreErrors)
-		    arguments.Add(DXC_ARG_WARNINGS_ARE_ERRORS);
+			arguments.Add(DXC_ARG_WARNINGS_ARE_ERRORS);
 
 		if (options.allResourcesBound)
-		    arguments.Add(DXC_ARG_ALL_RESOURCES_BOUND);
+			arguments.Add(DXC_ARG_ALL_RESOURCES_BOUND);
 
 		if (options.matrixRowMajor)
-		    arguments.Add(DXC_ARG_PACK_MATRIX_ROW_MAJOR);
+			arguments.Add(DXC_ARG_PACK_MATRIX_ROW_MAJOR);
 
-		if(options.pdb){
+		if (options.pdb)
+		{
 			arguments.Add("/Zi");
 			arguments.Add("/Qembed_debug");
 		}
@@ -212,12 +214,13 @@ class HLSLShaderCompiler
 				Size = pSource.GetBufferSize(),
 				Encoding = 0
 			};
-		
+
 		String shaderDir = Path.GetDirectoryPath(options.shaderPath, .. scope .());
 		IncludeHandler includeHandler = .(pLibrary, shaderDir);
 
 		List<StringView> compilerArgs = scope .();
-		for(var arg in arguments){
+		for (var arg in arguments)
+		{
 			compilerArgs.Add(arg);
 		}
 

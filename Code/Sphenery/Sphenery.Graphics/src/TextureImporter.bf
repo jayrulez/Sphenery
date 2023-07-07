@@ -5,7 +5,7 @@ namespace Sphenery.Graphics;
 
 class TextureImporter : AssetImporter<TextureAssetDescription>
 {
-	private List<StringView> mSupportedExtensions = new .() {".png"};
+	private List<StringView> mSupportedExtensions = new .() {".png"} ~ delete _;
 	public Span<StringView> SupportedExtensions => mSupportedExtensions;
 
 	protected override Result<TextureAssetDescription, AssetSystemError> OnImport(StringView path)

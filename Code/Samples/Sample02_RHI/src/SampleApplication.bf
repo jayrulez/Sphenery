@@ -29,8 +29,8 @@ class SampleApplication : Application
 
 	private GraphicsPlugin mGraphicsPlugin;
 
-	public this(IApplicationHost host, ApplicationConfiguration configuration)
-		: base(host, configuration)
+	public this(IApplicationHost host)
+		: base(host)
 	{
 	}
 
@@ -123,6 +123,7 @@ class SampleApplication : Application
 		mDeviceAllocator = new .(MemoryAllocatorInterface());
 		DeviceCreationDesc desc = .()
 			{
+				enableAPIValidation = true,
 				enableNRIValidation = true,
 				spirvBindingOffsets = SPIRV_BINDING_OFFSETS
 			};
