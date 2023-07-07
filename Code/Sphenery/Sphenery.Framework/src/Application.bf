@@ -7,7 +7,7 @@ using Sphenery.Core.Logging.Abstractions;
 using Sphenery.Framework.Jobs;
 using Sphenery.Core.Messaging;
 using Sphenery.Framework.Messaging;
-using Sphenery.Framework.Content;
+using Sphenery.Framework.Assets;
 namespace Sphenery.Framework;
 
 using internal Sphenery.Core;
@@ -77,8 +77,8 @@ class Application : IMessageSubscriber<MessageId>
 	private readonly JobSystem mJobSystem = null;
 	public JobSystem JobSystem => mJobSystem;
 
-	private readonly ContentSystem mContentSystem = null;
-	public ContentSystem ContentSystem => mContentSystem;
+	private readonly AssetSystem mContentSystem = null;
+	public AssetSystem ContentSystem => mContentSystem;
 
 	// The application event queue.
 	private readonly LocalMessageQueue<MessageId> mMessages = new .() ~ delete _;

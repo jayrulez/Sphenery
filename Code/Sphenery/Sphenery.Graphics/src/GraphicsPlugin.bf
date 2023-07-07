@@ -41,7 +41,7 @@ class GraphicsPlugin : Plugin
 
 	private readonly IDevice mDevice;
 	private readonly IWindow mWindow;
-	private TextureAssetLoader mTextureAssetLoader;
+	private TextureImporter mTextureAssetLoader;
 
 	public IWindow Window => mWindow;
 
@@ -64,7 +64,7 @@ class GraphicsPlugin : Plugin
 	{
 		mTextureAssetLoader = new .();
 
-		application.ContentSystem.RegisterAssetLoader(mTextureAssetLoader);
+		application.ContentSystem.Importers.RegisterImporter(mTextureAssetLoader.SupportedExtensions, mTextureAssetLoader);
 
 		application.RegisterUpdateFunction(mRenderUpdateFunction);
 
@@ -164,7 +164,7 @@ class GraphicsPlugin : Plugin
 
 		application.UnregisterUpdateFunction(mRenderUpdateFunction);
 
-		application.ContentSystem.RemoveAssetLoader(mTextureAssetLoader);
+		application.ContentSystem.Importers.UnregisterImporter(mTextureAssetLoader);
 		delete mTextureAssetLoader;
 	}
 
