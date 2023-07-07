@@ -4,11 +4,13 @@ using SDL2;
 using Sphenery.Framework.Platform.Window;
 using Sphenery.Core.Mathematics;
 using Sphenery.Core;
+using Sphenery.Core.Messaging;
+using Sphenery.Framework.Messaging;
 namespace Sphenery.SDL.Platform.Window;
 
 using internal Sphenery.SDL.Platform.Window;
 
-class SDLWindow : IWindow
+class SDLWindow : IWindow, IMessageSubscriber<MessageId>
 {
 	private readonly NativePointerRegistry mNativePointers = new .() ~ delete _;
 
@@ -388,15 +390,24 @@ class SDLWindow : IWindow
 			this.windowStatus |= WindowStatusFlags.Unshown;
 
 		this.WindowScale = Display?.DensityScale ?? 1f;
+
+		mWindowSystem.Platform.Application.Messages.Subscribe(this, SDLMessages.SDLEvent);
 	}
 
 	public ~this()
 	{
+		mWindowSystem.Platform.Application.Messages.Unsubscribe(this);
+
 		if (mSDLNativeWindow != null)
 		{
 			SDL.DestroyWindow(mSDLNativeWindow);
 			mSDLNativeWindow = null;
 		}
+	}
+
+	void IMessageSubscriber<MessageId>.ReceiveMessage(MessageId type, MessageData data)
+	{
+		OnReceivedMessage(type, data);
 	}
 
 	/// <inheritdoc/>
@@ -741,6 +752,11 @@ class SDLWindow : IWindow
 	public EventAccessor<WindowEventHandler> Restored { get; } = new .() ~ delete _;
 
 	/// <summary>
+	/// Occurs when the window is restored.
+	/// </summary>
+	public EventAccessor<WindowEventHandler> Resized { get; } = new .() ~ delete _;
+
+	/// <summary>
 	/// Raises the Shown event.
 	/// </summary>
 	private void OnShown() =>
@@ -769,6 +785,12 @@ class SDLWindow : IWindow
 	/// </summary>
 	private void OnRestored() =>
 		Restored?.[Friend]Invoke(this);
+
+	/// <summary>
+	/// Raises the Restored event.
+	/// </summary>
+	private void OnResized() =>
+		Resized?.[Friend]Invoke(this);
 
 	/// <summary>
 	/// Called when the window's DPI changes.
@@ -822,6 +844,7 @@ class SDLWindow : IWindow
 		if (windowedClientSize == null || (GetWindowState() == WindowState.Normal && GetWindowMode() == WindowMode.Windowed))
 		{
 			windowedClientSize = size;
+			OnResized();
 		}
 	}
 
@@ -857,5 +880,59 @@ class SDLWindow : IWindow
 
 		if (SDL.SetWindowDisplayMode(mSDLNativeWindow, ref mode) < 0)
 			Runtime.FatalError("Failed to set display mode.");
+	}
+
+	private void OnReceivedMessage(MessageId type, MessageData data)
+	{
+		if (type != SDLMessages.SDLEvent)
+			return;
+
+		var msg = (SDLEventMessageData)data;
+		if (msg.Event.type != .WindowEvent || msg.Event.window.windowID != (.)Id)
+			return;
+
+		switch (msg.Event.window.windowEvent)
+		{
+		case .Shown:
+			OnShown();
+			break;
+
+		case .Hidden:
+			OnHidden();
+			break;
+
+		case .Minimized:
+			this.windowStatus |= WindowStatusFlags.Minimized;
+			OnMinimized();
+			break;
+
+		case .Maximized:
+			this.windowStatus &= ~WindowStatusFlags.Minimized;
+			OnMaximized();
+			break;
+
+		case .Restored:
+			this.windowStatus &= ~WindowStatusFlags.Minimized;
+			OnRestored();
+			break;
+
+		case .Moved:
+			UpdateWindowedPosition(Point2(msg.Event.window.data1, msg.Event.window.data2));
+			break;
+
+		case .SizeChanged:
+			UpdateWindowedClientSize(Size2(msg.Event.window.data1, msg.Event.window.data2));
+			break;
+
+		case .FocusGained:
+			this.windowStatus |= WindowStatusFlags.Focused;
+			break;
+
+		case .Focus_lost:
+			this.windowStatus &= ~WindowStatusFlags.Focused;
+			break;
+
+		default: break;
+		}
 	}
 }

@@ -249,4 +249,9 @@ interface IWindow
 	/// Occurs when the window is restored.
 	/// </summary>
 	EventAccessor<WindowEventHandler> Restored { get; }
+
+	/// <summary>
+	/// Occurs when the window is resized.
+	/// </summary>
+	EventAccessor<WindowEventHandler> Resized { get; }
 }

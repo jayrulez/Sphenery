@@ -52,7 +52,7 @@ class GraphicsPlugin : Plugin
 			Function = new => this.Frame
 		} ~ delete _.Function;
 
-	public readonly EventAccessor<GraphicsRenderDelegate> OnRendering {get;} = new .() ~ delete _;
+	public readonly EventAccessor<GraphicsRenderDelegate> OnRendering { get; } = new .() ~ delete _;
 
 	public this(IDevice device, IWindow window)
 	{
@@ -81,6 +81,68 @@ class GraphicsPlugin : Plugin
 		{
 			Runtime.FatalError(scope $"Error: {result}");
 		}
+
+		CreateSwapChainResources();
+
+		mWindow.Resized.Subscribe(new => this.Resize);
+	}
+
+	public override void Shutdown(Application application)
+	{
+		mWindow.Resized.Unsubscribe(scope => this.Resize);
+
+		mCommandQueue.WaitForIdle();
+
+		DestroySwapChainResources();
+
+		mDevice.DestroyFence(mFrameFence);
+
+		application.UnregisterUpdateFunction(mRenderUpdateFunction);
+
+		application.ContentSystem.Importers.UnregisterImporter(mTextureAssetLoader);
+		delete mTextureAssetLoader;
+	}
+
+	private void Frame(ApplicationUpdateInfo info)
+	{
+		//info.Application.Logger.LogInformation("Graphics Plugin render update");
+
+		readonly uint32 bufferedFrameIndex = mFrameIndex % BUFFERED_FRAME_MAX_NUM;
+		/*readonly*/ ref Frame frame = ref m_Frames[bufferedFrameIndex];
+
+		if (mFrameIndex >= BUFFERED_FRAME_MAX_NUM)
+		{
+			mFrameFence.Wait(1 + mFrameIndex - BUFFERED_FRAME_MAX_NUM);
+			frame.commandAllocator.Reset();
+		}
+
+		readonly uint32 backBufferIndex = mSwapChain.AcquireNextTexture();
+		readonly ref BackBuffer backBuffer = ref m_SwapChainBuffers[backBufferIndex];
+
+		ICommandBuffer commandBuffer = frame.commandBuffer;
+		commandBuffer.Begin(null, 0);
+		var renderFrame = scope RenderFrame(mFrameIndex, commandBuffer, backBuffer);
+		{
+			OnRendering.[Friend]Invoke(renderFrame);
+		}
+
+		commandBuffer.End();
+
+		QueueSubmitDesc queueSubmitDesc = .();
+		queueSubmitDesc.commandBuffers = &frame.commandBuffer;
+		queueSubmitDesc.commandBufferNum = 1;
+		mCommandQueue.Submit(queueSubmitDesc);
+
+		mSwapChain.Present();
+
+		mFrameFence.QueueSignal(mCommandQueue, 1 + mFrameIndex);
+
+		mFrameIndex++;
+	}
+
+	private void CreateSwapChainResources()
+	{
+		Result result = .SUCCESS;
 
 		// Swap chain
 		Format swapChainFormat = default;
@@ -143,14 +205,13 @@ class GraphicsPlugin : Plugin
 		}
 	}
 
-	public override void Shutdown(Application application)
+	private void DestroySwapChainResources()
 	{
-		mCommandQueue.WaitForIdle();
-
 		for (ref Frame frame in ref m_Frames)
 		{
 			mDevice.DestroyCommandBuffer(frame.commandBuffer);
 			mDevice.DestroyCommandAllocator(frame.commandAllocator);
+			frame = .();
 		}
 
 		for (ref BackBuffer backBuffer in ref m_SwapChainBuffers)
@@ -158,50 +219,15 @@ class GraphicsPlugin : Plugin
 			mDevice.DestroyFrameBuffer(backBuffer.frameBuffer);
 			mDevice.DestroyDescriptor(backBuffer.colorAttachment);
 		}
+		m_SwapChainBuffers.Clear();
 
-		mDevice.DestroyFence(mFrameFence);
 		mDevice.DestroySwapChain(mSwapChain);
-
-		application.UnregisterUpdateFunction(mRenderUpdateFunction);
-
-		application.ContentSystem.Importers.UnregisterImporter(mTextureAssetLoader);
-		delete mTextureAssetLoader;
 	}
 
-	private void Frame(ApplicationUpdateInfo info)
+	private void Resize(IWindow window)
 	{
-		//info.Application.Logger.LogInformation("Graphics Plugin render update");
-
-		readonly uint32 bufferedFrameIndex = mFrameIndex % BUFFERED_FRAME_MAX_NUM;
-		/*readonly*/ ref Frame frame = ref m_Frames[bufferedFrameIndex];
-
-		if (mFrameIndex >= BUFFERED_FRAME_MAX_NUM)
-		{
-			mFrameFence.Wait(1 + mFrameIndex - BUFFERED_FRAME_MAX_NUM);
-			frame.commandAllocator.Reset();
-		}
-
-		readonly uint32 backBufferIndex = mSwapChain.AcquireNextTexture();
-		readonly ref BackBuffer backBuffer = ref m_SwapChainBuffers[backBufferIndex];
-
-		ICommandBuffer commandBuffer = frame.commandBuffer;
-		commandBuffer.Begin(null, 0);
-		var renderFrame = scope RenderFrame(mFrameIndex, commandBuffer, backBuffer);
-		{
-			OnRendering.[Friend]Invoke(renderFrame);
-		}
-		
-		commandBuffer.End();
-
-		QueueSubmitDesc queueSubmitDesc = .();
-		queueSubmitDesc.commandBuffers = &frame.commandBuffer;
-		queueSubmitDesc.commandBufferNum = 1;
-		mCommandQueue.Submit(queueSubmitDesc);
-
-		mSwapChain.Present();
-
-		mFrameFence.QueueSignal(mCommandQueue, 1 + mFrameIndex);
-
-		mFrameIndex++;
+		mCommandQueue.WaitForIdle();
+		DestroySwapChainResources();
+		CreateSwapChainResources();
 	}
 }
