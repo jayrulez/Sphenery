@@ -392,8 +392,8 @@ class DeviceVK : IDevice, IDeviceVK
 		m_AllocationCallbacks.pfnInternalAllocation = vkHostMemoryInternalAllocationNotification;
 		m_AllocationCallbacks.pfnInternalFree = vkHostMemoryInternalFreeNotification;*/
 
-		if (deviceCreationDesc.enableAPIValidation)
-			m_AllocationCallbackPtr = &m_AllocationCallbacks;
+		//if (deviceCreationDesc.enableAPIValidation)
+		//	m_AllocationCallbackPtr = &m_AllocationCallbacks;
 
 		if (VulkanNative.Initialize() case .Err)
 		{
@@ -468,8 +468,8 @@ class DeviceVK : IDevice, IDeviceVK
 		m_AllocationCallbacks.pfnInternalAllocation = vkHostMemoryInternalAllocationNotification;
 		m_AllocationCallbacks.pfnInternalFree = vkHostMemoryInternalFreeNotification;*/
 
-		if (deviceCreationVulkanDesc.enableAPIValidation)
-			m_AllocationCallbackPtr = &m_AllocationCallbacks;
+		//if (deviceCreationVulkanDesc.enableAPIValidation)
+		//	m_AllocationCallbackPtr = &m_AllocationCallbacks;
 
 		char8* loaderPath = deviceCreationVulkanDesc.vulkanLoaderPath;
 
@@ -756,7 +756,7 @@ class DeviceVK : IDevice, IDeviceVK
 			createInfo.pUserData = Internal.UnsafeCastToPtr(this);
 			createInfo.pfnUserCallback = debugCallbackFunction;
 
-			result = vkCreateDebugUtilsMessengerEXT(m_Instance, &createInfo, m_AllocationCallbackPtr, &m_Messenger);
+			result = vkCreateDebugUtilsMessengerEXTFunc(m_Instance, &createInfo, m_AllocationCallbackPtr, &m_Messenger);
 
 			RETURN_ON_FAILURE!(GetLogger(), result == .VK_SUCCESS, GetReturnCode(result),
 				"Can't create a debug utils messenger callback: vkCreateDebugUtilsMessengerEXT returned {0}.", (int32)result);
