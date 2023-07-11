@@ -4,7 +4,6 @@ namespace Sphenery.Framework;
 
 class ApplicationInitializer
 {
-	
 	private List<Plugin> mPlugins = new .() ~ delete _;
 
 	public Span<Plugin> Plugins => mPlugins;

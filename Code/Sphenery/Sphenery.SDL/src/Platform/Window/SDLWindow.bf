@@ -844,7 +844,6 @@ class SDLWindow : IWindow, IMessageSubscriber<MessageId>
 		if (windowedClientSize == null || (GetWindowState() == WindowState.Normal && GetWindowMode() == WindowMode.Windowed))
 		{
 			windowedClientSize = size;
-			OnResized();
 		}
 	}
 
@@ -921,6 +920,7 @@ class SDLWindow : IWindow, IMessageSubscriber<MessageId>
 			break;
 
 		case .SizeChanged:
+			OnResized();
 			UpdateWindowedClientSize(Size2(msg.Event.window.data1, msg.Event.window.data2));
 			break;
 

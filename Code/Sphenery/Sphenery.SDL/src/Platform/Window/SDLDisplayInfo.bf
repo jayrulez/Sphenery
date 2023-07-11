@@ -2,23 +2,28 @@ using Sphenery.Framework.Platform.Window;
 using System.Collections;
 using Sphenery.Framework;
 using SDL2;
+using Sphenery.Framework.Platform;
 namespace Sphenery.SDL.Platform.Window;
 
 class SDLDisplayInfo : IDisplayInfo
 {
 	// The list of display devices.  SDL2 never updates its device info, even if
 	// devices are added or removed, so we only need to create this once.
-	private readonly List<IDisplay> displays = new .() ~ DeleteContainerAndItems!(_);;
+	private readonly List<IDisplay> displays = new .() ~ DeleteContainerAndItems!(_);
+
+	private readonly IPlatform mPlatform;
 	
 	/// <summary>
 	/// Initializes a new instance of the OpenGLSpheneryDisplayInfo class.
 	/// </summary>
-	public this()
+	public this(IPlatform platform)
 	{
+		mPlatform = platform;
+
 	    //Contract.Require(context, nameof(context));
 		int displayCount = SDL.GetNumVideoDisplays();
 		for(int i = 0; i < displayCount; i++){
-			this.displays.Add(new SDLDisplay(i));
+			this.displays.Add(new SDLDisplay(i, mPlatform));
 		}
 	}
 

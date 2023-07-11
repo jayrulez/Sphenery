@@ -4,46 +4,53 @@ using System;
 using System.Collections;
 using SDL2;
 using Sphenery.Framework;
+using Sphenery.Framework.Platform;
+using Sphenery.Framework.Messaging;
 namespace Sphenery.SDL.Platform.Window;
 
 class SDLDisplay : IDisplay
 {
-        // SDL2 display info.
-        private readonly int displayIndex;
-        private readonly String name = new .() ~ delete _;
-        private readonly List<DisplayMode> displayModes = new .() ~ DeleteContainerAndItems!(_);
-        private readonly DisplayMode desktopDisplayMode ~ delete _;
+	// SDL2 display info.
+	private readonly int displayIndex;
+	private readonly String name = new .() ~ delete _;
+	private readonly List<DisplayMode> displayModes = new .() ~ DeleteContainerAndItems!(_);
+	private readonly DisplayMode desktopDisplayMode ~ delete _;
 
-        // Services.
-        //private readonly ScreenRotationService screenRotationService;
-        //private readonly ScreenDensityService screenDensityService;
+	// Services.
+	private readonly ScreenRotationService screenRotationService ~ delete _;
+	private readonly ScreenDensityService screenDensityService ~ delete _;
+
+	private readonly IPlatform mPlatform;
 
 	/// <summary>
 	/// Initializes a new instance of the OpenGLSpheneryDisplay class.
 	/// </summary>
 	/// <param name="context">The Sphenery context.</param>
 	/// <param name="displayIndex">The SDL2 display index that this object represents.</param>
-	public this(int displayIndex)
+	public this(int displayIndex, IPlatform platform)
 	{
-	    //Contract.Require(context, nameof(context));
+		//Contract.Require(context, nameof(context));
 
-	    this.displayIndex = displayIndex;
+		this.displayIndex = displayIndex;
+
+		mPlatform = platform;
 
 		int displayModesCount = SDL.GetNumDisplayModes((.)displayIndex);
-		for(int modeIndex = 0; modeIndex < displayModesCount; modeIndex++){
+		for (int modeIndex = 0; modeIndex < displayModesCount; modeIndex++)
+		{
 			this.displayModes.Add(CreateDisplayModeFromSDL((.)displayIndex, (.)modeIndex));
 		}
 
-	    this.name.Set(scope String(SDL.GetDisplayName((.)displayIndex)));
+		this.name.Set(scope String(SDL.GetDisplayName((.)displayIndex)));
 
-	    SDL.SDL_DisplayMode sdlDesktopDisplayMode = .();
-	    if (SDL.GetDesktopDisplayMode((.)displayIndex, out sdlDesktopDisplayMode) < 0)
-	        Runtime.FatalError(scope $"Failed to get desktop display mode for display {displayIndex}.");
+		SDL.SDL_DisplayMode sdlDesktopDisplayMode = .();
+		if (SDL.GetDesktopDisplayMode((.)displayIndex, out sdlDesktopDisplayMode) < 0)
+			Runtime.FatalError(scope $"Failed to get desktop display mode for display {displayIndex}.");
 
-	    this.desktopDisplayMode = CreateDisplayModeFromSDL(sdlDesktopDisplayMode);
+		this.desktopDisplayMode = CreateDisplayModeFromSDL(sdlDesktopDisplayMode);
 
-	    //this.screenRotationService = ScreenRotationService.Create(this);
-	    //this.screenDensityService = ScreenDensityService.Create(this);
+		this.screenRotationService = new SDLScreenRotationService(this);
+		this.screenDensityService = new SDLScreenDensityService(this);
 	}
 
 	public Span<DisplayMode> GetSupportedDisplayModes()
@@ -63,13 +70,13 @@ class SDLDisplay : IDisplay
 
 	public double DipsToPixels(double dips)
 	{
-		if (Double.PositiveInfinity ==dips)
+		if (Double.PositiveInfinity == dips)
 		{
-		    return Int32.MaxValue;
+			return Int32.MaxValue;
 		}
 		if (Double.NegativeInfinity == dips)
 		{
-		    return Int32.MinValue;
+			return Int32.MinValue;
 		}
 		return dips * DensityScale;
 	}
@@ -299,7 +306,6 @@ class SDLDisplay : IDisplay
 	/// <param name="time">Time elapsed since the last call to <see cref="FrameworkContext.Update(FrameworkTime)"/>.</param>
 	public void Update(ApplicationTime time)
 	{
-
 	}
 
 	public int32 Index
@@ -310,7 +316,7 @@ class SDLDisplay : IDisplay
 		}
 	}
 
-	public System.String Name
+	public String Name
 	{
 		get
 		{
@@ -333,7 +339,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenRotationService.ScreenRotation;
 		}
 	}
 
@@ -341,7 +347,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenDensityService.DeviceScale;
 		}
 	}
 
@@ -349,7 +355,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenDensityService.DensityScale;
 		}
 	}
 
@@ -357,7 +363,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenDensityService.DensityX;
 		}
 	}
 
@@ -365,7 +371,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenDensityService.DensityY;
 		}
 	}
 
@@ -373,7 +379,7 @@ class SDLDisplay : IDisplay
 	{
 		get
 		{
-			return default; // todo sedulous
+			return screenDensityService.DensityBucket;
 		}
 	}
 
@@ -390,18 +396,19 @@ class SDLDisplay : IDisplay
 	/// </summary>
 	internal void RefreshDensityInformation()
 	{
-	    /*var oldDensityBucket = screenDensityService.DensityBucket;
-	    var oldDensityScale = screenDensityService.DensityScale;
-	    var oldDensityX = screenDensityService.DensityX;
-	    var oldDensityY = screenDensityService.DensityY;
-	    var oldDeviceScale = screenDensityService.DeviceScale;
+		/*var oldDensityBucket = screenDensityService.DensityBucket;
+		var oldDensityScale = screenDensityService.DensityScale;
+		var oldDensityX = screenDensityService.DensityX;
+		var oldDensityY = screenDensityService.DensityY;
+		var oldDeviceScale = screenDensityService.DeviceScale;*/
 
-	    if (screenDensityService.Refresh())
-	    {
-	        var messageData = context.Messages.CreateMessageData<DisplayDensityChangedMessageData>();
-	        messageData.Display = this;
-	        context.Messages.Publish(FrameworkMessages.DisplayDensityChanged, messageData);
-	    }*/
+		
+		if (screenDensityService.Refresh())
+		{
+			var messageData = mPlatform.Application.Messages.CreateMessageData<DisplayDensityChangedMessageData>();
+			messageData.Display = this;
+			mPlatform.Application.Messages.Publish(ApplicationMessages.DisplayDensityChanged, messageData);
+		}
 	}
 
 	/// <summary>
@@ -409,11 +416,11 @@ class SDLDisplay : IDisplay
 	/// </summary>
 	private DisplayMode CreateDisplayModeFromSDL(SDL.SDL_DisplayMode mode)
 	{
-	    int32 bpp;
-	    uint32 Rmask, Gmask, Bmask, Amask;
-	    SDL.PixelFormatEnumToMasks((uint32)mode.format, out bpp, out Rmask, out Gmask,out Bmask, out Amask);
+		int32 bpp;
+		uint32 Rmask, Gmask, Bmask, Amask;
+		SDL.PixelFormatEnumToMasks((uint32)mode.format, out bpp, out Rmask, out Gmask, out Bmask, out Amask);
 
-	    return new DisplayMode(mode.w, mode.h, bpp, mode.refresh_rate, Index);
+		return new DisplayMode(mode.w, mode.h, bpp, mode.refresh_rate, Index);
 	}
 
 	/// <summary>
@@ -421,9 +428,9 @@ class SDLDisplay : IDisplay
 	/// </summary>
 	private DisplayMode CreateDisplayModeFromSDL(int32 displayIndex, int32 modeIndex)
 	{
-	    SDL.SDL_DisplayMode mode = .();
-	    SDL.GetDisplayMode(displayIndex, modeIndex, out mode);
+		SDL.SDL_DisplayMode mode = .();
+		SDL.GetDisplayMode(displayIndex, modeIndex, out mode);
 
-	    return CreateDisplayModeFromSDL(mode);
+		return CreateDisplayModeFromSDL(mode);
 	}
 }

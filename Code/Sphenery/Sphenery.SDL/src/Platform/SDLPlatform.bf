@@ -13,7 +13,7 @@ class SDLPlatform : IPlatform
 	public IWindowSystem WindowSystem => mWindowSystem;
 	public IInputSystem InputSystem => mInputSystem;
 
-	private readonly SDLDisplayInfo mDisplayInfo = new .() ~ delete _;
+	private readonly SDLDisplayInfo mDisplayInfo ~ delete _;
 	private readonly SDLWindowSystem mWindowSystem ~ delete _;
 	private readonly SDLInputSystem mInputSystem ~ delete _;
 	private readonly Application mApplication;
@@ -21,6 +21,7 @@ class SDLPlatform : IPlatform
 	public this(Application application)
 	{
 		mApplication = application;
+		mDisplayInfo = new .(this);
 		mWindowSystem = new .(this);
 		mInputSystem = new .(this);
 	}

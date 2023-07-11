@@ -12,6 +12,44 @@ namespace Sphenery.Framework;
 
 using internal Sphenery.Core;
 
+enum ApplicationUpdateStage
+{
+	PreUpdate,
+	PostUpdate,
+	Update,
+	FixedUpdate,
+}
+
+enum ApplicationState
+{
+	Stopped,
+	Running,
+	Paused,
+}
+
+struct ApplicationUpdateInfo
+{
+	public Application Application;
+	public ApplicationState State;
+	public ApplicationTime Time;
+}
+
+typealias ApplicationUpdateFunction = delegate void(ApplicationUpdateInfo info);
+
+struct ApplicationUpdateFunctionInfo
+{
+	public int Priority;
+	public ApplicationUpdateStage Stage;
+	public ApplicationUpdateFunction Function;
+}
+
+struct ApplicationStateChangeInfo
+{
+	public Application Application;
+	public ApplicationState PreviousState;
+	public ApplicationState CurrentState;
+}
+
 class Application : IMessageSubscriber<MessageId>
 {
 	private readonly Monitor mMonitor = new .() ~ delete _;
@@ -77,8 +115,8 @@ class Application : IMessageSubscriber<MessageId>
 	private readonly JobSystem mJobSystem = null;
 	public JobSystem JobSystem => mJobSystem;
 
-	private readonly AssetSystem mContentSystem = null;
-	public AssetSystem ContentSystem => mContentSystem;
+	private readonly AssetSystem mAssetSystem = null;
+	public AssetSystem AssetSystem => mAssetSystem;
 
 	// The application event queue.
 	private readonly LocalMessageQueue<MessageId> mMessages = new .() ~ delete _;
@@ -96,7 +134,7 @@ class Application : IMessageSubscriber<MessageId>
 			});
 
 		mJobSystem = new .(this, 4);
-		mContentSystem = new .();
+		mAssetSystem = new .();
 
 		mHost = host;
 		mLogger = host.Logger;
@@ -104,7 +142,7 @@ class Application : IMessageSubscriber<MessageId>
 
 	public ~this()
 	{
-		delete mContentSystem;
+		delete mAssetSystem;
 		delete mJobSystem;
 
 		Enum.MapValues<ApplicationUpdateStage>(scope (member) =>

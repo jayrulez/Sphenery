@@ -37,4 +37,9 @@ static class ApplicationMessages
 	/// An event indicating that the operation system is low on memory.
 	/// </summary>
 	public static readonly MessageId LowMemory = MessageId.Acquire(nameof(LowMemory));
+
+	/// <summary>
+	/// An event indicating that the density settings for a particular display were changed.
+	/// </summary>
+	public static readonly MessageId DisplayDensityChanged = MessageId.Acquire(nameof(DisplayDensityChanged));
 }
