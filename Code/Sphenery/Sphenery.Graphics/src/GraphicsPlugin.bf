@@ -64,7 +64,7 @@ class GraphicsPlugin : Plugin
 	{
 		mTextureAssetLoader = new .();
 
-		application.ContentSystem.Importers.RegisterImporter(mTextureAssetLoader.SupportedExtensions, mTextureAssetLoader);
+		application.AssetSystem.Importers.RegisterImporter(mTextureAssetLoader.SupportedExtensions, mTextureAssetLoader);
 
 		application.RegisterUpdateFunction(mRenderUpdateFunction);
 
@@ -99,7 +99,7 @@ class GraphicsPlugin : Plugin
 
 		application.UnregisterUpdateFunction(mRenderUpdateFunction);
 
-		application.ContentSystem.Importers.UnregisterImporter(mTextureAssetLoader);
+		application.AssetSystem.Importers.UnregisterImporter(mTextureAssetLoader);
 		delete mTextureAssetLoader;
 	}
 
