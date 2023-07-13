@@ -71,7 +71,7 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 
 	protected virtual void OnInitializingApplication(ApplicationInitializer initializer){}
 
-	public void Exit()
+	public void RequestExit()
 	{
 		mExitRequested = true;
 	}
@@ -189,7 +189,7 @@ abstract class SDLApplicationHost : IApplicationHost, IMessageSubscriber<Message
 		switch (type)
 		{
 		case ApplicationMessages.Quit:
-			Exit();
+			RequestExit();
 			break;
 		}
 	}

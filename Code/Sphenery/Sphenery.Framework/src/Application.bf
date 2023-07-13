@@ -212,10 +212,11 @@ class Application : IMessageSubscriber<MessageId>
 
 		OnShuttingdown();
 
-		for (var plugin in mPlugins)
+		for (int i = 0; i < mPlugins.Count; i++)
 		{
-			plugin.Shutdown(this);
+			mPlugins[i].Shutdown(this);
 		}
+		mPlugins.Clear();
 
 		mTickTimer.Stop();
 
@@ -289,7 +290,6 @@ class Application : IMessageSubscriber<MessageId>
 			SortUpdateFunctions();
 		}
 #endregion
-
 		{
 			ProcessMessages();
 			mJobSystem.Update();
@@ -363,7 +363,6 @@ class Application : IMessageSubscriber<MessageId>
 					Time = mPostUpdateTimeTracker.Increment(TimeSpan(elapsedTicks), false)
 				});
 		}
-
 		{
 			ProcessMessages();
 		}
@@ -419,7 +418,7 @@ class Application : IMessageSubscriber<MessageId>
 
 	internal void ProcessMessages()
 	{
-	    mMessages.Process();
+		mMessages.Process();
 	}
 
 	/// <summary>

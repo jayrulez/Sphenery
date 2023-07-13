@@ -8,5 +8,5 @@ interface IApplicationHost
 
 	IPlatform Platform { get; }
 
-	void Exit();
+	void RequestExit();
 }
