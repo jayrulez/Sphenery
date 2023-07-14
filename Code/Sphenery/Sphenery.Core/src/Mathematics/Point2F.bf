@@ -334,7 +334,7 @@ struct Point2F : IEquatable<Point2F>, IInterpolatable<Point2F>, IEquatable, IHas
     /// <param name="point">The <see cref="Point2F"/> to transform.</param>
     /// <param name="quaternion">The quaternion by which to transform the point.</param>
     /// <param name="result">The transformed <see cref="Point2D"/>.</param>
-    public static void Transform(ref Point2F point, ref Quaternion quaternion, out Point2F result)
+    public static void Transform(Point2F point, Quaternion quaternion, out Point2F result)
     {
         var x2 = quaternion.X + quaternion.X;
         var y2 = quaternion.Y + quaternion.Y;
@@ -376,7 +376,7 @@ struct Point2F : IEquatable<Point2F>, IInterpolatable<Point2F>, IEquatable, IHas
     /// <param name="point">The <see cref="Point2F"/> to transform.</param>
     /// <param name="matrix">The matrix by which to transform the point.</param>
     /// <param name="result">The transformed <see cref="Point2F"/>.</param>
-    public static void Transform(ref Point2F point, ref Matrix matrix, out Point2F result)
+    public static void Transform(Point2F point, Matrix matrix, out Point2F result)
     {
         Point2F temp;
 
