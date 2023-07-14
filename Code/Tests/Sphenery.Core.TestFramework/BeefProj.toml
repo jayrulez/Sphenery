@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sphenery.Core.TestFramework"
+TargetType = "BeefLib"
+StartupObject = "Sphenery.Core.TestFramework.Program"

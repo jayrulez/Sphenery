@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sphenery.Core" = "*"}
+Dependencies = {corlib = "*", "Sphenery.Core" = "*", "Sphenery.Core.TestFramework" = "*"}
 
 [Project]
 Name = "Sphenery.Core.Tests"
