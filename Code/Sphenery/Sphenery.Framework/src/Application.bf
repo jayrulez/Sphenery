@@ -300,7 +300,7 @@ class Application : IMessageSubscriber<MessageId>
 		if (InactiveSleepTime.Ticks > 0 && mState != .Running) // should be if host is suspended
 			Thread.Sleep(InactiveSleepTime);
 
-		var elapsedTicks = mTickTimer.Elapsed.Ticks;
+		int64 elapsedTicks = mTickTimer.Elapsed.Ticks;
 		mTickTimer.Restart();
 
 		mAccumulatedElapsedTime += elapsedTicks;
